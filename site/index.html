@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dream Home — KC Northland</title>
+
+    <!--
+        Leaflet 1.9.4 — core mapping library.
+        Pinned version so the site keeps working even if the CDN changes defaults.
+    -->
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin="" />
+
+    <!--
+        Leaflet.draw — draw a rectangle on the map to select a new neighborhood.
+        Used by area-picker.js for the V2 "Add new area" feature.
+    -->
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css"
+          crossorigin="" />
+
+    <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+    <!-- ================================================================
+         Top bar: title, counts, action buttons
+         ================================================================ -->
+    <header class="topbar">
+        <div class="topbar-title">
+            <h1>Dream Home</h1>
+            <span class="subtitle">KC Northland &middot; 64116</span>
+        </div>
+        <div class="topbar-meta">
+            <span id="home-count" class="meta-item">Loading…</span>
+            <span id="geocode-status" class="meta-item"></span>
+            <button id="add-area-btn" class="ghost-btn add-area-btn" type="button"
+                    title="Draw a new neighborhood area on the map">
+                + Add area
+            </button>
+            <button id="reset-cache" class="ghost-btn" type="button"
+                    title="Clear geocode cache and re-fetch all addresses">
+                Reset geocode cache
+            </button>
+        </div>
+    </header>
+
+    <!-- Draw-mode banner: shown while the user is drawing an area rectangle -->
+    <div class="draw-mode-banner" id="draw-mode-banner" role="status">
+        Draw a rectangle around your target neighborhood &mdash; click to start, drag to select, release to finish
+    </div>
+
+    <!-- ================================================================
+         Main content: filters | map | card
+         ================================================================ -->
+    <main class="layout">
+
+        <!-- Left column: filter panel -->
+        <aside class="sidebar" id="filters">
+            <h2>Filters</h2>
+
+            <!-- Status checkboxes — populated dynamically from the data so
+                 new statuses added to the Sheet appear automatically. -->
+            <fieldset class="filter-group">
+                <legend>Status</legend>
+                <div id="filter-status" class="checkbox-list"></div>
+            </fieldset>
+
+            <!-- Neighborhood checkboxes — populated dynamically. -->
+            <fieldset class="filter-group">
+                <legend>Neighborhood</legend>
+                <div id="filter-neighborhood" class="checkbox-list"></div>
+            </fieldset>
+
+            <!-- Numeric range filters: min/max pair for each attribute.
+                 Using plain number inputs keeps the UI dependency-free. -->
+            <fieldset class="filter-group">
+                <legend>Price (USD)</legend>
+                <div class="range-row">
+                    <input type="number" id="price-min" placeholder="min" />
+                    <span class="range-dash">—</span>
+                    <input type="number" id="price-max" placeholder="max" />
+                </div>
+            </fieldset>
+
+            <fieldset class="filter-group">
+                <legend>Square footage</legend>
+                <div class="range-row">
+                    <input type="number" id="sqft-min" placeholder="min" />
+                    <span class="range-dash">—</span>
+                    <input type="number" id="sqft-max" placeholder="max" />
+                </div>
+            </fieldset>
+
+            <fieldset class="filter-group">
+                <legend>Bedrooms</legend>
+                <div class="range-row">
+                    <input type="number" id="beds-min" placeholder="min" min="0" step="1" />
+                    <span class="range-dash">—</span>
+                    <input type="number" id="beds-max" placeholder="max" min="0" step="1" />
+                </div>
+            </fieldset>
+
+            <!-- Bathrooms uses 0.5 step so half-baths (e.g., 4.5) from the
+                 Sheet are handled correctly. -->
+            <fieldset class="filter-group">
+                <legend>Bathrooms</legend>
+                <div class="range-row">
+                    <input type="number" id="baths-min" placeholder="min" min="0" step="0.5" />
+                    <span class="range-dash">—</span>
+                    <input type="number" id="baths-max" placeholder="max" min="0" step="0.5" />
+                </div>
+            </fieldset>
+
+            <fieldset class="filter-group">
+                <legend>Year built</legend>
+                <div class="range-row">
+                    <input type="number" id="year-min" placeholder="min" min="1900" />
+                    <span class="range-dash">—</span>
+                    <input type="number" id="year-max" placeholder="max" max="2030" />
+                </div>
+            </fieldset>
+
+            <!-- Desirability: Matt's manual 1-10 rating from the Sheet.
+                 Unscored homes always pass the range filter unless "Hide
+                 unscored" is explicitly checked. -->
+            <fieldset class="filter-group">
+                <legend>Desirability (1–10)</legend>
+                <div class="range-row">
+                    <input type="number" id="desir-min" placeholder="min" min="1" max="10" step="1" />
+                    <span class="range-dash">—</span>
+                    <input type="number" id="desir-max" placeholder="max" min="1" max="10" step="1" />
+                </div>
+                <label class="checkbox-list" style="margin-top:0.4rem;">
+                    <input type="checkbox" id="hide-unscored" />
+                    <span>Hide unscored homes</span>
+                </label>
+            </fieldset>
+
+            <!-- Color-by selector: switches the parcel fill metric.
+                 Status outline is always visible; this controls the fill only. -->
+            <fieldset class="filter-group" style="margin-top:1.25rem;">
+                <legend>Color parcels by</legend>
+                <select id="color-by" class="color-by-select">
+                    <!-- Options populated dynamically from config.parcelColorModes -->
+                </select>
+                <!-- Gradient legend: shown when a metric is active -->
+                <div id="gradient-legend" class="gradient-legend" hidden>
+                    <span id="legend-low-label" class="legend-label"></span>
+                    <div class="legend-swatch"></div>
+                    <span id="legend-high-label" class="legend-label"></span>
+                </div>
+            </fieldset>
+
+            <button id="clear-filters" class="ghost-btn" type="button">
+                Clear all filters
+            </button>
+        </aside>
+
+        <!-- Center: the Leaflet map. parcel.js and app.js both attach to #map. -->
+        <section id="map" aria-label="Map of tracked homes"></section>
+
+        <!-- Right column: slide-out KPI card.
+             Hidden by default (0px column + opacity 0); .card-open slides it in. -->
+        <aside class="card" id="home-card" aria-hidden="true">
+            <button id="card-close" class="card-close" type="button"
+                    aria-label="Close details">&times;</button>
+            <div id="card-body">
+                <!-- Filled by app.js openCard() when a parcel or pin is clicked -->
+            </div>
+        </aside>
+    </main>
+
+    <!-- ================================================================
+         Footer: counts + data sources
+         ================================================================ -->
+    <footer class="footer">
+        <span id="footer-count">—</span>
+        <span class="footer-sep">&middot;</span>
+        <span>Source: <a id="sheet-link" target="_blank" rel="noopener">Google Sheet</a></span>
+        <span class="footer-sep">&middot;</span>
+        <span>Parcels: <a href="https://gisweb.claycountymo.gov" target="_blank" rel="noopener">Clay County GIS</a></span>
+        <span class="footer-sep">&middot;</span>
+        <span>Coords: US Census Geocoder</span>
+    </footer>
+
+    <!-- ================================================================
+         "Add new area" modal
+         Shown when the user completes drawing a rectangle.
+         area-picker.js manages opening/closing and content.
+         ================================================================ -->
+    <div class="modal-backdrop" id="area-modal" role="dialog"
+         aria-modal="true" aria-labelledby="area-modal-title">
+        <div class="modal">
+            <button class="modal-close" id="area-modal-close"
+                    type="button" aria-label="Close">&times;</button>
+            <h2 id="area-modal-title">New area selected</h2>
+            <p id="area-modal-desc">
+                Download a blank tracking sheet pre-formatted with the standard
+                26 columns. Open it in Google Sheets, fill in homes you're
+                watching, then publish it as CSV and add the URL to
+                <code>config.js</code>.
+            </p>
+            <ol>
+                <li>Click <strong>Download template</strong> below</li>
+                <li>Open the file in Google Sheets (File → Import)</li>
+                <li>Add homes you want to track in the rows below the header</li>
+                <li>File → Share → Publish to web → CSV → copy the URL</li>
+                <li>Paste the URL into <code>config.js</code> as <code>sheetCsvUrl</code></li>
+                <li>Update <code>mapCenter</code> and <code>parcelBbox</code> to your area</li>
+            </ol>
+            <div class="modal-actions">
+                <button class="btn-primary" id="area-modal-download" type="button">
+                    Download template
+                </button>
+                <button class="btn-secondary" id="area-modal-cancel" type="button">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================================================================
+         Third-party libraries — load before our scripts.
+         Order matters: config → PapaParse → Leaflet → Leaflet.draw →
+                        geocode → parcel → area-picker → app
+         ================================================================ -->
+    <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"
+            crossorigin=""></script>
+
+    <!-- Our modules, dependency order: config → geocode → parcel → area-picker → app -->
+    <script src="config.js"></script>
+    <script src="js/geocode.js"></script>
+    <script src="js/parcel.js"></script>
+    <script src="js/area-picker.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

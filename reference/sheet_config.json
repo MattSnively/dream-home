@@ -1,0 +1,41 @@
+{
+  "_comment": "Config for the Google Sheet that holds hand-curated home data. The pipeline reads published_csv_url via pandas.read_csv each run. To update: File -> Share -> Publish to web -> CSV in Google Sheets, then paste the resulting URL below.",
+  "pubhtml_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vR8JqN_tTCWbz5gal5y1KWKREnAzMXvTIUFv4jNVIFmOmVMQVmVsV_J5hvBmX3rMIIzOzJ6pzTVIYJ-/pubhtml",
+  "published_csv_url": "https://docs.google.com/spreadsheets/d/e/2PACX-1vR8JqN_tTCWbz5gal5y1KWKREnAzMXvTIUFv4jNVIFmOmVMQVmVsV_J5hvBmX3rMIIzOzJ6pzTVIYJ-/pub?output=csv",
+  "primary_key_column": "Address",
+  "expected_columns": [
+    "Address",
+    "Parcel",
+    "Status",
+    "List Price (Original)",
+    "List Price (Latest)",
+    "Listing Date",
+    "Days on Market",
+    "Lot Size",
+    "Lot Desirability",
+    "Frontage Type",
+    "Square Footage",
+    "Price/SqFt",
+    "Neighborhood",
+    "Bedrooms",
+    "Bedrooms Up",
+    "Bathrooms",
+    "Offices",
+    "Floors",
+    "HOA fees (mo)",
+    "Year Built",
+    "Storage",
+    "Yard Size",
+    "Garage Spaces",
+    "Formal Dining",
+    "Finished Basement",
+    "Previous Listing"
+  ],
+  "status_values": [
+    "For Sale",
+    "Off Market",
+    "Pending",
+    "Sold"
+  ],
+  "drop_row_if_column_blank": "Address"
+}

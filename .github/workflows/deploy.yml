@@ -1,0 +1,55 @@
+# Dream Home — GitHub Pages deployment
+#
+# Deploys the contents of the site/ directory to GitHub Pages on every push
+# to main.  No build step needed — everything is static HTML/CSS/JS.
+#
+# Setup (one-time, in GitHub repo settings):
+#   Settings → Pages → Source → "GitHub Actions"
+# That's it.  The workflow handles the rest automatically.
+
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  # Allow triggering a deploy manually from the GitHub Actions tab.
+  workflow_dispatch:
+
+# Allow the workflow to write to the gh-pages environment.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only run one deployment at a time; don't cancel in-progress deploys.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy site/
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Configure GitHub Pages — generates the artifact from the site/ folder.
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      # Upload site/ as the Pages artifact.  No build needed.
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/
+
+      # Deploy the uploaded artifact to GitHub Pages.
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
