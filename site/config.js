@@ -19,7 +19,7 @@ window.DREAM_HOME_CONFIG = {
     // select the tab → CSV → Publish.  Without that step the fetch will
     // return an HTML login page instead of CSV data.
     sheetCsvUrl:
-        "https://docs.google.com/spreadsheets/d/e/2PACX-1vR8JqN_tTCWbz5gal5y1KWKREnAzMXvTIUFv4jNVIFmOmVMQVmVsV_J5hvBmX3rMIIzOzJ6pzTVIYJ-/pub?output=csv&gid=537332677",
+        "https://docs.google.com/spreadsheets/d/e/2PACX-1vR8JqN_tTCWbz5gal5y1KWKREnAzMXvTIUFv4jNVIFmOmVMQVmVsV_J5hvBmX3rMIIzOzJ6pzTVIYJ-/pub?gid=537332677&single=true&output=csv",
 
     // ---- Map view ---------------------------------------------------------
 
