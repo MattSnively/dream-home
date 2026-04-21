@@ -88,8 +88,9 @@ window.DREAM_HOME_CONFIG = {
     statusColors: {
         "for sale":   "#2ecc71",   // green  — actively listed
         "pending":    "#f1c40f",   // yellow — under contract
-        "off market": "#95a5a6",   // grey   — not currently listed
+        "off market": "#7f8c8d",   // grey   — not currently listed
         "sold":       "#3498db",   // blue   — closed / historical
+        "friends":    "#d4a017",   // gold   — home owned by someone Matt knows
     },
 
     // Color for any status string not in the map above (typos, new values, etc.)
