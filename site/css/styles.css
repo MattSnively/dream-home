@@ -552,6 +552,72 @@ body {
     display: block;
 }
 
+/* --- Score picker (in KPI card) ----------------------------------------- */
+
+/*
+ * A row of 10 numbered buttons for rating a home 1–10 directly on the map.
+ * Sits at the top of the card, before the hero KPI band, so it's the first
+ * thing Matt sees when a parcel is clicked.
+ */
+.score-picker {
+    margin-bottom: 1rem;
+    padding: 0.65rem 0.75rem;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+}
+.score-picker-label {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #9ca3af;
+    margin-bottom: 0.45rem;
+}
+.score-btns {
+    display: flex;
+    gap: 0.2rem;
+}
+/* Each numbered button — grows to fill the row evenly */
+.score-btn {
+    flex: 1;
+    padding: 0.38rem 0;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    background: #fff;
+    color: #374151;
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.12s, border-color 0.12s, color 0.12s;
+    text-align: center;
+}
+.score-btn:hover {
+    border-color: #f59e0b;
+    background: #fffbeb;
+    color: #92400e;
+}
+/* Currently selected score — amber gradient matching the score-chip */
+.score-btn.active {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    border-color: #d97706;
+    color: #fff;
+}
+/* Clear (×) button — narrower, red on hover */
+.score-clear {
+    flex: 0 0 auto;
+    padding: 0.38rem 0.55rem;
+    color: #9ca3af;
+    border-color: #e5e7eb;
+}
+.score-clear:hover {
+    background: #fee2e2;
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
 /* --- Footer ------------------------------------------------------------- */
 .footer {
     padding: 0.35rem 1rem;

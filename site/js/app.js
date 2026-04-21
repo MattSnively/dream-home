@@ -25,7 +25,11 @@
         parcelLayer: null,  // Leaflet GeoJSON layer from DreamHomeParcels
         matchedIds: new Set(), // home ids that have a matched parcel polygon
         map: null,
+        localScores: {},    // address -> 1-10 score, persisted in localStorage
     };
+
+    // localStorage key for the score cache.
+    const SCORES_KEY = "dream-home-scores";
 
     const cfg = window.DREAM_HOME_CONFIG;
 
@@ -367,6 +371,18 @@
                     onerror="this.style.display='none'" />`
             : "";
 
+        // Score picker — 10 numbered buttons, active one highlighted amber.
+        // data-home-id lets the delegated click handler in load() find the home.
+        const scoreBtns = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+            .map((n) => {
+                const active = home.desirability === n ? " active" : "";
+                return `<button class="score-btn${active}" data-score="${n}" type="button">${n}</button>`;
+            })
+            .join("");
+        const clearBtn = home.desirability !== null
+            ? `<button class="score-btn score-clear" data-score="" type="button" title="Clear score">×</button>`
+            : "";
+
         body.innerHTML = `
             ${heroImgHtml}
             <h3>${escapeHtml(home.address)}</h3>
@@ -388,6 +404,15 @@
                 </svg>
                 View on Zillow
             </a>
+
+            <!-- Score picker: click a number to rate this home 1-10.
+                 Saves instantly to localStorage; × clears the score. -->
+            <div class="score-picker">
+                <span class="score-picker-label">Rate this home</span>
+                <div class="score-btns" data-home-id="${escapeHtml(home.id)}">
+                    ${scoreBtns}${clearBtn}
+                </div>
+            </div>
 
             <!-- Hero KPI band: the three numbers Matt cares about most -->
             <div class="hero-kpi">
@@ -640,6 +665,117 @@
         document.getElementById("footer-count").textContent = text;
     }
 
+    // ---- Desirability score management (localStorage) --------------------
+
+    /**
+     * Read saved scores from localStorage and merge them into the homes array.
+     * localStorage scores take priority over whatever is in the Sheet — they
+     * represent the user's latest intent from a scoring session on the map.
+     *
+     * Called once after the Sheet CSV is parsed, before anything renders.
+     *
+     * @param {Array<Object>} homes Normalized home objects
+     */
+    function loadLocalScores(homes) {
+        try {
+            const raw = localStorage.getItem(SCORES_KEY);
+            state.localScores = raw ? JSON.parse(raw) : {};
+        } catch (e) {
+            console.warn("Dream Home: could not read local scores —", e);
+            state.localScores = {};
+        }
+
+        // Apply any saved scores on top of the Sheet values.
+        homes.forEach((h) => {
+            if (Object.prototype.hasOwnProperty.call(state.localScores, h.address)) {
+                h.desirability = state.localScores[h.address];
+            }
+        });
+    }
+
+    /**
+     * Persist a new desirability score for a home, update the in-memory state,
+     * re-render the parcel fill gradient, and refresh the open card so the
+     * active button highlights immediately.
+     *
+     * Passing null clears the score (removes it from localStorage too).
+     *
+     * @param {Object}   home  Home object from state.allHomes
+     * @param {number|null} score 1–10 integer, or null to clear
+     */
+    function saveLocalScore(home, score) {
+        // 1. Update in-memory home object.
+        home.desirability = score;
+
+        // 2. Persist to localStorage.
+        if (score === null) {
+            delete state.localScores[home.address];
+        } else {
+            state.localScores[home.address] = score;
+        }
+        try {
+            localStorage.setItem(SCORES_KEY, JSON.stringify(state.localScores));
+        } catch (e) {
+            console.warn("Dream Home: localStorage write failed —", e);
+        }
+
+        // 3. Re-compute per-metric ranges so the gradient rescales if this
+        //    score extends or contracts the min/max.
+        const colorRanges = computeColorRanges(state.allHomes);
+        window.DreamHomeParcels.setColorRanges(colorRanges);
+
+        // 4. Re-apply fill colors to the parcel layer.
+        const colorMode = document.getElementById("color-by").value;
+        window.DreamHomeParcels.updateParcelColors(state.parcelLayer, colorMode);
+
+        // 5. Update the gradient legend labels (min/max may have changed).
+        updateGradientLegend(colorMode, colorRanges);
+
+        // 6. Re-render the open card so the active score button updates.
+        openCard(home);
+    }
+
+    /**
+     * Download a two-column CSV (Address, Desirability) containing every score
+     * saved in localStorage this session.  The user pastes this into the Sheet
+     * to make scores permanent.
+     *
+     * Alerts if no scores have been recorded yet.
+     */
+    function exportLocalScores() {
+        const entries = Object.entries(state.localScores);
+        if (!entries.length) {
+            alert(
+                "No scores recorded yet.\n\n" +
+                "Click parcels on the map and rate them 1–10 to record scores."
+            );
+            return;
+        }
+
+        // Sort alphabetically by address for easier pasting into the Sheet.
+        entries.sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true }));
+
+        const rows = [
+            '"Address","Desirability"',
+            ...entries.map(
+                ([addr, score]) => `"${addr.replace(/"/g, '""')}",${score}`
+            ),
+        ];
+
+        const csv  = rows.join("\r\n");
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement("a");
+        a.href     = url;
+        a.download = "briarcliff-scores.csv";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        console.log(`Dream Home: exported ${entries.length} scores.`);
+    }
+
     // ---- Main entry point ------------------------------------------------
 
     async function load() {
@@ -668,6 +804,24 @@
             .getElementById("export-addresses-btn")
             .addEventListener("click", startExportDrawMode);
 
+        // "Export scores" — downloads localStorage scores as a two-column CSV.
+        document
+            .getElementById("export-scores-btn")
+            .addEventListener("click", exportLocalScores);
+
+        // Score picker clicks — event delegation on the card body so the
+        // listener survives openCard() re-rendering innerHTML.
+        document.getElementById("card-body").addEventListener("click", (e) => {
+            const btn = e.target.closest(".score-btn");
+            if (!btn) return;
+            const homeId = btn.closest(".score-btns").dataset.homeId;
+            const home   = state.allHomes.find((h) => h.id === homeId);
+            if (!home) return;
+            const raw   = btn.dataset.score;
+            const score = raw === "" ? null : parseInt(raw, 10);
+            saveLocalScore(home, score);
+        });
+
         const sheetLink = document.getElementById("sheet-link");
         sheetLink.href = cfg.sheetCsvUrl.replace("/pub?output=csv", "/pubhtml");
 
@@ -688,6 +842,11 @@
         // ---- Step 2: Normalize rows ----
         const homes = rows.map(rowToHome).filter((h) => h !== null);
         state.allHomes = homes;
+
+        // Merge any scores Matt clicked in a previous session before anything
+        // renders — localStorage scores override Sheet values.
+        loadLocalScores(homes);
+
         statusEl.textContent = `Parsed ${homes.length} homes.`;
 
         // ---- Step 3: Build filter UI ----
