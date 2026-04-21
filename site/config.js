@@ -146,6 +146,39 @@ window.DREAM_HOME_CONFIG = {
         { value: "squareFootage", label: "Square footage",   field: "squareFootage" },
     ],
 
+    // ---- Multi-area support -----------------------------------------------
+
+    // Each entry can override any of the base config fields above for a
+    // different neighborhood or city.  The first entry is always the default
+    // (Briarcliff) — leave its overrides empty to inherit everything from above.
+    //
+    // Minimum fields for a new area:
+    //   sheetCsvUrl, mapCenter, mapZoom, defaultCity, defaultState, defaultZip
+    //
+    // Set parcelBbox: null to skip the Clay County parcel layer entirely —
+    // required for any area outside Clay County, MO.
+    areas: [
+        {
+            id:    "briarcliff",
+            label: "Briarcliff (KC)",
+            // No overrides — inherits everything from the base config above.
+        },
+        {
+            id:    "winter-park",
+            label: "Winter Park, FL",
+            // Paste a published Google Sheet CSV URL here once the sheet exists.
+            // File → Share → Publish to web → select tab → CSV → copy URL.
+            sheetCsvUrl: "",
+            mapCenter:   [28.5997, -81.3396],
+            mapZoom:     14,
+            parcelBbox:  null,   // No Clay County GIS for FL — parcel layer skipped
+            parcelStreetNames: [],
+            defaultCity:  "Winter Park",
+            defaultState: "FL",
+            defaultZip:   "32789",
+        },
+    ],
+
     // ---- CSV template columns (used by the "Add new area" feature) ---------
 
     // These column names are written as headers into the downloadable Sheet

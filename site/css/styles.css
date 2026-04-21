@@ -86,6 +86,28 @@ body {
     background: rgba(255, 255, 255, 0.12);
 }
 
+/* Area switcher — neighborhood dropdown in the topbar */
+.area-switcher {
+    background: rgba(255, 255, 255, 0.12);
+    color: #e2e8f0;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 6px;
+    padding: 0.28rem 0.55rem;
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.area-switcher:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+.area-switcher option {
+    /* System colors vary — force dark background for consistency */
+    background: #1e293b;
+    color: #e2e8f0;
+}
+
 /* "Add area" button — slightly differentiated with a teal accent */
 .add-area-btn {
     background: rgba(20, 184, 166, 0.15);

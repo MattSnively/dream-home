@@ -35,6 +35,10 @@
             <span class="subtitle">KC Northland &middot; 64116</span>
         </div>
         <div class="topbar-meta">
+            <!-- Area switcher: populated dynamically from config.areas.
+                 Hidden automatically when only one area is configured. -->
+            <select id="area-switcher" class="area-switcher" title="Switch neighborhood"></select>
+
             <span id="home-count" class="meta-item">Loading…</span>
             <span id="geocode-status" class="meta-item"></span>
             <button id="add-area-btn" class="ghost-btn add-area-btn" type="button"

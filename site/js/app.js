@@ -26,6 +26,11 @@
         matchedIds: new Set(), // home ids that have a matched parcel polygon
         map: null,
         localScores: {},    // address -> 1-10 score, persisted in localStorage
+
+        // Snapshot of the base (first-area) config fields that are overridable
+        // per area.  Populated once in load() before any area switching so we
+        // can always reset to defaults before applying an area's overrides.
+        baseAreaConfig: null,
     };
 
     // localStorage key for the score cache.
@@ -512,6 +517,9 @@
      * Build the status + neighborhood checkbox groups dynamically from the data.
      * Called once after the CSV loads so new statuses in the Sheet appear
      * automatically without any code change.
+     *
+     * NOTE: Does NOT add the sidebar "change" event listener — that is wired
+     * once in load() to prevent duplicate listeners when switching areas.
      */
     function buildCheckboxFilters() {
         const statusSet = new Set();
@@ -546,11 +554,6 @@
                     escapeHtml(titleCase(n));
                 nbEl.appendChild(label);
             });
-
-        // One change listener on the entire sidebar captures all inputs.
-        document
-            .getElementById("filters")
-            .addEventListener("change", applyFilters);
     }
 
     /** Read current filter UI state and return a predicate function. */
@@ -776,8 +779,277 @@
         console.log(`Dream Home: exported ${entries.length} scores.`);
     }
 
+    // ---- Multi-area support ------------------------------------------------
+
+    // These are the config fields that each area entry can override.
+    // Any key listed here will be snapshotted on first load and restored
+    // to the snapshot before each subsequent area's overrides are applied.
+    const AREA_OVERRIDE_KEYS = [
+        "sheetCsvUrl",
+        "mapCenter",
+        "mapZoom",
+        "parcelBbox",
+        "parcelStreetNames",
+        "defaultCity",
+        "defaultState",
+        "defaultZip",
+    ];
+
+    /**
+     * Apply a single area's config overrides onto the global cfg object.
+     *
+     * Process:
+     *   1. Restore all overridable keys to their base (first-area) values.
+     *   2. Copy any non-undefined fields from the area entry on top.
+     *
+     * This ensures switching back to area[0] (Briarcliff) fully resets any
+     * fields that were changed for a different area.
+     *
+     * @param {Object} area  One entry from cfg.areas[]
+     */
+    function applyAreaConfig(area) {
+        // Step 1: restore base config for overridable keys.
+        AREA_OVERRIDE_KEYS.forEach((key) => {
+            if (state.baseAreaConfig && key in state.baseAreaConfig) {
+                cfg[key] = state.baseAreaConfig[key];
+            }
+        });
+
+        // Step 2: apply this area's overrides (skip id/label and undefined values).
+        Object.keys(area).forEach((key) => {
+            if (key === "id" || key === "label") return;
+            if (area[key] !== undefined) cfg[key] = area[key];
+        });
+    }
+
+    /**
+     * Populate the area-switcher <select> from config.areas and wire its
+     * change handler.  Hides the control when only one area is configured.
+     */
+    function buildAreaSwitcher() {
+        const areas    = cfg.areas;
+        const switcher = document.getElementById("area-switcher");
+        if (!switcher) return;
+
+        // If there's only one area (or none), hide the switcher — no need to clutter
+        // the topbar when there's nothing to switch between.
+        if (!areas || areas.length <= 1) {
+            switcher.hidden = true;
+            return;
+        }
+
+        switcher.hidden = false;
+        switcher.innerHTML = "";
+        areas.forEach((area, idx) => {
+            const opt       = document.createElement("option");
+            opt.value       = String(idx);
+            opt.textContent = area.label;
+            switcher.appendChild(opt);
+        });
+
+        // Switch areas when the user picks a different neighborhood.
+        switcher.addEventListener("change", () => {
+            const idx  = parseInt(switcher.value, 10);
+            const area = (cfg.areas || [])[idx];
+            if (area) switchArea(area);
+        });
+    }
+
+    /**
+     * Switch to a new area: clear existing map data, apply the area's config
+     * overrides, re-center the map, then reload all Sheet + parcel data.
+     *
+     * This is a full data reload — geocode results are cached in localStorage
+     * so repeated switches don't re-hit the Census API.
+     *
+     * @param {Object} area  One entry from cfg.areas[]
+     */
+    async function switchArea(area) {
+        closeCard();
+
+        // Show loading state while clearing.
+        const statusEl = document.getElementById("geocode-status");
+        statusEl.textContent = `Loading ${area.label}…`;
+        document.getElementById("home-count").textContent = "Loading…";
+
+        // Remove all fallback circle pins from the map.
+        state.markers.forEach((marker) => state.map.removeLayer(marker));
+        state.markers.clear();
+
+        // Remove parcel polygon layer if one is present.
+        if (state.parcelLayer) {
+            state.map.removeLayer(state.parcelLayer);
+            state.parcelLayer = null;
+        }
+
+        // Reset in-memory data and match tracking.
+        state.allHomes     = [];
+        state.filteredHomes = [];
+        state.matchedIds.clear();
+
+        // Clear dynamic filter checkboxes — they'll be rebuilt from new data.
+        document.getElementById("filter-status").innerHTML       = "";
+        document.getElementById("filter-neighborhood").innerHTML = "";
+
+        // Clear any open number filters so they don't bleed across areas.
+        clearFilters();
+
+        // Swap in this area's config values (bbox, sheet URL, map center, etc.).
+        applyAreaConfig(area);
+
+        // Re-center the map on the new area.
+        state.map.setView(cfg.mapCenter, cfg.mapZoom);
+
+        // Update the Sheet link in the footer to point to the new Sheet.
+        updateSheetLink();
+
+        // Reload all data for the new area.
+        await loadAreaData();
+    }
+
+    /** Update the footer Sheet link to the current cfg.sheetCsvUrl. */
+    function updateSheetLink() {
+        const sheetLink = document.getElementById("sheet-link");
+        if (!sheetLink) return;
+        // Convert the CSV publish URL back to a human-readable pubhtml URL.
+        sheetLink.href = (cfg.sheetCsvUrl || "")
+            .replace(/\/pub(\?.*)?$/, "/pubhtml");
+    }
+
+    // ---- Per-area data loading -------------------------------------------
+
+    /**
+     * Fetch, parse, and render all data for the currently active area config.
+     *
+     * Called by load() on first page load, and by switchArea() whenever the
+     * user picks a different neighborhood.  The map must already be initialized.
+     *
+     * Steps:
+     *   1. Fetch + parse the Sheet CSV.
+     *   2. Normalize rows into home objects; merge localStorage scores.
+     *   3. Rebuild filter checkboxes from the new data.
+     *   4. Launch parcel layer + geocoding in parallel.
+     *      – Parcel layer is skipped when cfg.parcelBbox is null (e.g. FL areas).
+     *   5. Add fallback circle pins for un-matched homes.
+     *   6. Wire the Color-by dropdown and apply initial filter state.
+     */
+    async function loadAreaData() {
+        const statusEl = document.getElementById("geocode-status");
+
+        // Guard: if no Sheet URL is configured for this area, show a prompt.
+        if (!cfg.sheetCsvUrl) {
+            statusEl.textContent = "No Sheet URL — add sheetCsvUrl to config.js.";
+            document.getElementById("home-count").textContent = "No data.";
+            return;
+        }
+
+        // ---- Step 1: Fetch + parse CSV ----
+        statusEl.textContent = "Fetching sheet…";
+        let rows;
+        try {
+            rows = await fetchSheet();
+        } catch (err) {
+            console.error(err);
+            statusEl.textContent = "Failed to fetch Sheet.";
+            document.getElementById("home-count").textContent =
+                "Sheet fetch failed. See console.";
+            return;
+        }
+
+        // ---- Step 2: Normalize rows ----
+        const homes = rows.map(rowToHome).filter((h) => h !== null);
+        state.allHomes = homes;
+
+        // Merge any scores saved from a previous session before anything
+        // renders — localStorage scores override Sheet values.
+        loadLocalScores(homes);
+
+        statusEl.textContent = `Parsed ${homes.length} homes.`;
+
+        // ---- Step 3: Build filter checkboxes ----
+        // Populate immediately so Matt can see the controls while async
+        // parcel loading and geocoding run in the background.
+        buildCheckboxFilters();
+
+        // ---- Step 4: Start parcel + geocode in parallel ----
+        // Both are async.  Launching together minimizes total wait time.
+        // Parcels from ArcGIS are typically faster than geocoding all addresses.
+
+        statusEl.textContent = "Loading parcels + geocoding…";
+
+        // Only query Clay County GIS when this area has a bounding box.
+        // Areas outside Clay County (e.g. Winter Park, FL) set parcelBbox: null
+        // in config to skip this step entirely.
+        const parcelPromise = cfg.parcelBbox
+            ? window.DreamHomeParcels.buildParcelLayer(
+                state.map,
+                homes,
+                openCard,
+                (msg) => { if (msg) statusEl.textContent = msg; }
+              )
+            : Promise.resolve(null);
+
+        // Geocode each home sequentially (Census API rate-limit courtesy).
+        // Drop a pin as each address resolves so the map feels alive during load.
+        const geocodePromise = (async () => {
+            let done = 0;
+            for (let i = 0; i < homes.length; i++) {
+                const g = await window.DreamHomeGeocode.geocode(homes[i].address);
+                Object.assign(homes[i], {
+                    lat: g.lat,
+                    lon: g.lon,
+                    matchedAddress: g.matched,
+                });
+                done++;
+                statusEl.textContent = `Geocoding ${done}/${homes.length}…`;
+            }
+        })();
+
+        // Wait for parcels first so we know which homes are matched before
+        // deciding which ones need a fallback circle pin.
+        state.parcelLayer = await parcelPromise;
+
+        // Build the matched-id set from the parcel layer.
+        if (state.parcelLayer) {
+            state.parcelLayer.eachLayer((featureLayer) => {
+                const home = featureLayer.feature._matchedHome;
+                if (home) state.matchedIds.add(home.id);
+            });
+        }
+
+        // Wait for geocoding to finish, then add fallback pins for unmatched homes.
+        await geocodePromise;
+        homes.forEach((home) => {
+            if (home.lat === null || home.lon === null) return; // couldn't geocode
+            if (state.matchedIds.has(home.id)) return;          // already has a polygon
+
+            const marker = makeMarker(home);
+            state.markers.set(home.id, marker);
+            marker.addTo(state.map);
+        });
+
+        // ---- Step 5: Compute per-metric ranges + wire the Color-by control ----
+
+        // Compute min/max across all homes for each color metric so the gradient
+        // scales to actual data rather than arbitrary fixed bounds.
+        const colorRanges = computeColorRanges(homes);
+        window.DreamHomeParcels.setColorRanges(colorRanges);
+
+        // Rebuild the Color-by dropdown (options come from config, but the
+        // gradient range labels come from the current data).
+        buildColorBySelect(colorRanges);
+
+        statusEl.textContent = "";
+        applyFilters(); // sets initial count and syncs parcel colors with filters
+    }
+
     // ---- Main entry point ------------------------------------------------
 
+    /**
+     * One-time initialization: create the map, wire all static UI buttons,
+     * snapshot the base area config, populate the area switcher, then
+     * delegate data loading to loadAreaData().
+     */
     async function load() {
         state.map = initMap();
         // Expose the map instance so area-picker.js and dev tools can reach it.
@@ -787,7 +1059,16 @@
         // Must happen after the map is created so Leaflet.draw can attach to it.
         window.DreamHomeAreaPicker.init(state.map);
 
-        // Wire static UI elements that don't depend on data.
+        // Snapshot overridable config fields before any area switching happens.
+        // applyAreaConfig() restores this snapshot before applying each area's
+        // overrides, ensuring clean round-trips between areas.
+        state.baseAreaConfig = {};
+        AREA_OVERRIDE_KEYS.forEach((key) => {
+            state.baseAreaConfig[key] = cfg[key];
+        });
+
+        // ---- Wire static UI elements (done once; survives area switches) ----
+
         document.getElementById("card-close").addEventListener("click", closeCard);
         document
             .getElementById("clear-filters")
@@ -822,106 +1103,22 @@
             saveLocalScore(home, score);
         });
 
-        const sheetLink = document.getElementById("sheet-link");
-        sheetLink.href = cfg.sheetCsvUrl.replace("/pub?output=csv", "/pubhtml");
+        // Filter panel — one change listener captures all inputs (status
+        // checkboxes, neighborhood checkboxes, number ranges).  Wired here
+        // once rather than inside buildCheckboxFilters() to avoid stacking
+        // duplicate listeners on area switches.
+        document
+            .getElementById("filters")
+            .addEventListener("change", applyFilters);
 
-        // ---- Step 1: Fetch + parse CSV ----
-        const statusEl = document.getElementById("geocode-status");
-        statusEl.textContent = "Fetching sheet…";
-        let rows;
-        try {
-            rows = await fetchSheet();
-        } catch (err) {
-            console.error(err);
-            statusEl.textContent = "Failed to fetch Sheet.";
-            document.getElementById("home-count").textContent =
-                "Sheet fetch failed. See console.";
-            return;
-        }
+        // Populate + wire the area switcher dropdown.
+        buildAreaSwitcher();
 
-        // ---- Step 2: Normalize rows ----
-        const homes = rows.map(rowToHome).filter((h) => h !== null);
-        state.allHomes = homes;
+        // Set the footer Sheet link for the initial (default) area.
+        updateSheetLink();
 
-        // Merge any scores Matt clicked in a previous session before anything
-        // renders — localStorage scores override Sheet values.
-        loadLocalScores(homes);
-
-        statusEl.textContent = `Parsed ${homes.length} homes.`;
-
-        // ---- Step 3: Build filter UI ----
-        // Populate filter checkboxes immediately so Matt can see the controls
-        // while geocoding and parcel loading run in the background.
-        buildCheckboxFilters();
-
-        // ---- Step 4: Start parcel + geocode in parallel ----
-        // Both are async.  We kick them off together so we're not waiting
-        // sequentially.  Parcels from the ArcGIS service are usually faster
-        // than geocoding all addresses, so they'll likely finish first.
-
-        statusEl.textContent = "Loading parcels + geocoding…";
-
-        const parcelPromise = window.DreamHomeParcels.buildParcelLayer(
-            state.map,
-            homes,
-            openCard,             // click handler
-            (msg) => { if (msg) statusEl.textContent = msg; }
-        );
-
-        // Geocode each home sequentially (Census API throttle).  Drop a pin
-        // as soon as each address resolves so the map feels alive during load.
-        // Fallback pins are only added for homes that don't match a parcel.
-        const geocodePromise = (async () => {
-            let done = 0;
-            for (let i = 0; i < homes.length; i++) {
-                const g = await window.DreamHomeGeocode.geocode(homes[i].address);
-                Object.assign(homes[i], {
-                    lat: g.lat,
-                    lon: g.lon,
-                    matchedAddress: g.matched,
-                });
-                done++;
-                statusEl.textContent = `Geocoding ${done}/${homes.length}…`;
-            }
-        })();
-
-        // Wait for parcels first so we know which homes are matched before
-        // deciding which ones need a fallback circle pin.
-        state.parcelLayer = await parcelPromise;
-
-        // Build the matched-id set from the parcel layer so we can skip pins
-        // for homes that already have polygon coverage.
-        if (state.parcelLayer) {
-            state.parcelLayer.eachLayer((featureLayer) => {
-                const home = featureLayer.feature._matchedHome;
-                if (home) state.matchedIds.add(home.id);
-            });
-        }
-
-        // Wait for geocoding to finish, then add fallback pins for unmatched homes.
-        await geocodePromise;
-        homes.forEach((home) => {
-            if (home.lat === null || home.lon === null) return; // couldn't geocode
-            if (state.matchedIds.has(home.id)) return;          // already has a polygon
-
-            const marker = makeMarker(home);
-            state.markers.set(home.id, marker);
-            marker.addTo(state.map);
-        });
-
-        // ---- Step 5: Compute per-metric ranges + wire the Color-by control ----
-
-        // Compute min/max across all homes for each metric so the gradient can
-        // scale to the actual data rather than arbitrary fixed bounds.
-        const colorRanges = computeColorRanges(homes);
-        window.DreamHomeParcels.setColorRanges(colorRanges);
-
-        // Populate the "Color parcels by" dropdown from config so the options
-        // always stay in sync with config.parcelColorModes without touching HTML.
-        buildColorBySelect(colorRanges);
-
-        statusEl.textContent = "";
-        applyFilters(); // sets initial count and syncs parcel colors with filters
+        // Load data for the default (first) area.
+        await loadAreaData();
     }
 
     // ---- Color-by helpers ------------------------------------------------
@@ -967,13 +1164,15 @@
         });
 
         // Update parcel colors + legend whenever the selection changes.
-        select.addEventListener("change", () => {
+        // Use onchange (not addEventListener) so re-calling buildColorBySelect
+        // on area switch replaces the previous handler instead of stacking them.
+        select.onchange = () => {
             window.DreamHomeParcels.updateParcelColors(state.parcelLayer, select.value);
             // Also re-apply visibility so newly colored parcels respect active filters.
             const visibleIds = new Set(state.filteredHomes.map((h) => h.id));
             window.DreamHomeParcels.updateParcelVisibility(state.parcelLayer, visibleIds);
             updateGradientLegend(select.value, colorRanges);
-        });
+        };
 
         // Initialize legend to hidden (default = "none").
         updateGradientLegend("none", colorRanges);
