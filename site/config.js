@@ -177,6 +177,22 @@ window.DREAM_HOME_CONFIG = {
             defaultState: "FL",
             defaultZip:   "32789",
         },
+        {
+            id:    "johnson-county-ks",
+            label: "Johnson County, KS",
+            // Paste a published Google Sheet CSV URL here once the sheet exists.
+            // File → Share → Publish to web → select tab → CSV → copy URL.
+            sheetCsvUrl: "",
+            // Centered on Overland Park — adjust mapCenter + mapZoom to zoom in on
+            // a specific neighborhood once you know which streets to watch.
+            mapCenter:   [38.9822, -94.6708],
+            mapZoom:     13,
+            parcelBbox:  null,   // Johnson County, KS parcel service not yet wired
+            parcelStreetNames: [],
+            defaultCity:  "Overland Park",
+            defaultState: "KS",
+            defaultZip:   "66062",
+        },
     ],
 
     // ---- CSV template columns (used by the "Add new area" feature) ---------
