@@ -14,10 +14,12 @@ window.DREAM_HOME_CONFIG = {
     // ---- Data source -------------------------------------------------------
 
     // Published-CSV URL from Matt's Google Sheet.
-    // To update: in Google Sheets → File → Share → Publish to web →
-    // choose "Comma-separated values (.csv)" → copy the URL here.
+    // Sheet ID and tab GID are taken from the /edit URL the user shared.
+    // The sheet must be published: File → Share → Publish to web →
+    // select the tab → CSV → Publish.  Without that step the fetch will
+    // return an HTML login page instead of CSV data.
     sheetCsvUrl:
-        "https://docs.google.com/spreadsheets/d/e/2PACX-1vR8JqN_tTCWbz5gal5y1KWKREnAzMXvTIUFv4jNVIFmOmVMQVmVsV_J5hvBmX3rMIIzOzJ6pzTVIYJ-/pub?output=csv",
+        "https://docs.google.com/spreadsheets/d/1pDbcm7qJfsCitsFcRTwb6yqF_EMWsAtsGC6FiEeSmMs/pub?output=csv&gid=537332677",
 
     // ---- Map view ---------------------------------------------------------
 
