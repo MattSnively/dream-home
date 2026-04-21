@@ -412,6 +412,73 @@
         });
     }
 
+    // ---- Address export ----------------------------------------------------
+
+    /**
+     * Convert an all-caps situs address string to title case, preserving
+     * common directional abbreviations (NW, NE, SW, SE, N, S, E, W) in
+     * their expected uppercase form.
+     *
+     * Example: "4319 NW MULBERRY DR" → "4319 NW Mulberry Dr"
+     *
+     * @param {string} addr Raw uppercase address from ArcGIS
+     * @returns {string} Title-cased address
+     */
+    function titleCaseAddress(addr) {
+        if (!addr) return "";
+        // Directionals we want to keep uppercase after title-casing.
+        const DIRECTIONALS = new Set(["N", "S", "E", "W", "NE", "NW", "SE", "SW"]);
+        return addr
+            .split(" ")
+            .map((word) => {
+                if (DIRECTIONALS.has(word.toUpperCase())) return word.toUpperCase();
+                if (!word) return word;
+                return word[0].toUpperCase() + word.slice(1).toLowerCase();
+            })
+            .join(" ");
+    }
+
+    /**
+     * Fetch every parcel within the configured bbox + street names and return
+     * a sorted, deduplicated array of clean one-line address strings.
+     *
+     * This is the data source for the "Export address list" button in app.js.
+     * It reuses fetchParcels() and getParcelSitusAddress() so the bbox/street
+     * config stays in a single place (config.js).
+     *
+     * @returns {Promise<string[]>} Sorted address strings, title-cased
+     */
+    async function fetchAllAddresses() {
+        const bbox        = cfg.parcelBbox;
+        const streetNames = cfg.parcelStreetNames || [];
+
+        let geojson;
+        try {
+            geojson = await fetchParcels(bbox, streetNames);
+        } catch (err) {
+            throw new Error("Parcel service unavailable: " + err.message);
+        }
+
+        if (!geojson || !Array.isArray(geojson.features)) return [];
+
+        // Deduplicate by lowercased key; reconstruct + title-case for display.
+        const seen      = new Set();
+        const addresses = [];
+
+        geojson.features.forEach((f) => {
+            const raw = getParcelSitusAddress(f.properties);
+            if (!raw) return;
+            const key = raw.toLowerCase().trim();
+            if (seen.has(key)) return;
+            seen.add(key);
+            addresses.push(titleCaseAddress(raw));
+        });
+
+        // Sort numerically by street number then alphabetically by street name.
+        addresses.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+        return addresses;
+    }
+
     // ---- Public API --------------------------------------------------------
 
     window.DreamHomeParcels = {
@@ -420,5 +487,6 @@
         updateParcelColors,
         updateParcelVisibility,
         normalizeAddress,
+        fetchAllAddresses,
     };
 })();
