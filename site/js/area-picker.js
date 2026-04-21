@@ -20,6 +20,7 @@
     let drawnRect = null;
     let drawControl = null;
     let drawHandler = null;
+    let drawCreatedHandler = null; // stored so stopDrawMode can remove it cleanly
 
     // ---- CSV template generator ------------------------------------------
 
@@ -130,13 +131,17 @@
         drawHandler.enable();
 
         // Listen for the draw:created event — fires when the user releases
-        // the mouse after dragging out a rectangle.
-        map.once("draw:created", function (e) {
+        // the mouse after dragging out a rectangle.  Store the handler
+        // reference so stopDrawMode() can explicitly remove it on cancel —
+        // otherwise a cancelled draw leaves a stale listener that interferes
+        // with the export-addresses draw mode.
+        drawCreatedHandler = function (e) {
             drawnRect = e.layer;
             drawnItems.addLayer(drawnRect);
             stopDrawMode(map);
             openModal();
-        });
+        };
+        map.on("draw:created", drawCreatedHandler);
 
         // If the user presses Escape or clicks outside, cancel draw mode.
         map.once("draw:drawstop", function () {
@@ -154,6 +159,12 @@
         if (drawHandler) {
             drawHandler.disable();
             drawHandler = null;
+        }
+        // Always remove the draw:created listener so a cancelled draw doesn't
+        // leave a stale handler that fires during the export draw mode.
+        if (drawCreatedHandler) {
+            map.off("draw:created", drawCreatedHandler);
+            drawCreatedHandler = null;
         }
     }
 

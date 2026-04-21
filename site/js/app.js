@@ -966,6 +966,7 @@
         drawHandler.enable();
 
         // One-time listener: fires when the rectangle is released.
+        // Defined before registering so cleanup() can reference it for map.off().
         function onDrawCreated(e) {
             cleanup();
             const bounds    = e.layer.getBounds();
@@ -989,12 +990,19 @@
 
         function cleanup() {
             drawHandler.disable();
+            // Explicitly remove the listener — prevents double-firing if the
+            // user rapidly toggles between modes.
             state.map.off("draw:created", onDrawCreated);
             document.removeEventListener("keydown", onKeydown);
             banner.classList.remove("active");
             if (exportBtn) exportBtn.disabled = false;
         }
 
+        // Use map.on (not once) so cleanup() can remove it with map.off().
+        // Clear any other stale draw:created listeners first to avoid conflicts
+        // with area-picker's handler if a previous "+ Add area" was cancelled
+        // before completing a draw.
+        state.map.off("draw:created");
         state.map.on("draw:created", onDrawCreated);
         document.addEventListener("keydown", onKeydown);
     }
