@@ -662,11 +662,11 @@
             location.reload();
         });
 
-        // "Export addresses" — pulls all parcel addresses from ArcGIS and
-        // downloads a blank-but-addressed CSV for importing into Google Sheets.
+        // "Export addresses" — enters draw mode so the user can select a
+        // sub-area of the map and download only those parcel addresses.
         document
             .getElementById("export-addresses-btn")
-            .addEventListener("click", exportAddressList);
+            .addEventListener("click", startExportDrawMode);
 
         const sheetLink = document.getElementById("sheet-link");
         sheetLink.href = cfg.sheetCsvUrl.replace("/pub?output=csv", "/pubhtml");
@@ -860,78 +860,143 @@
         }
     }
 
-    // ---- Address list export ---------------------------------------------
+    // ---- Address list export (draw-to-select) --------------------------------
 
     /**
-     * Query the ArcGIS parcel service for every address within the configured
-     * bbox + street names, then download a pre-formatted CSV with all Sheet
-     * template columns.  The Address column is pre-filled; every other column
-     * is blank so Matt can fill them in as he researches each home.
+     * Write a CSV blob to disk as a browser download.
+     * Shared by both the full export and the selection export.
      *
-     * The button is disabled during the fetch to prevent double-clicks, and
-     * its label changes to "Fetching…" as visual feedback.
+     * @param {string[]} addresses  Title-cased address strings to include
+     * @param {string}   filename   Download filename
      */
-    async function exportAddressList() {
-        const btn = document.getElementById("export-addresses-btn");
+    function downloadAddressCsv(addresses, filename) {
+        const cols    = cfg.templateColumns || ["Address"];
+        const addrIdx = cols.indexOf("Address");
 
-        // Disable button + show loading state while the ArcGIS request is in flight.
-        if (btn) {
-            btn.disabled = true;
-            btn.textContent = "Fetching…";
-        }
+        // Header row
+        const header = cols.map((c) => `"${c.replace(/"/g, '""')}"`).join(",");
 
-        try {
-            const addresses = await window.DreamHomeParcels.fetchAllAddresses();
+        // One data row per address; all non-address columns left blank
+        const dataRows = addresses.map((addr) =>
+            cols
+                .map((_, i) => (i === addrIdx ? `"${addr.replace(/"/g, '""')}"` : ""))
+                .join(",")
+        );
+
+        const csv  = [header, ...dataRows].join("\r\n");
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        const url  = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href     = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    /**
+     * Collect addresses from the already-loaded parcel layer that fall within
+     * a Leaflet LatLngBounds rectangle.
+     *
+     * Each parcel polygon has `feature._situsAddress` pre-set by buildParcelLayer().
+     * We check whether the polygon's visual center (getBounds().getCenter()) falls
+     * inside the drawn rectangle — fast, no re-query needed.
+     *
+     * @param {L.LatLngBounds} bounds  Rectangle drawn by the user
+     * @returns {string[]}             Sorted, deduplicated address list
+     */
+    function addressesInBounds(bounds) {
+        if (!state.parcelLayer) return [];
+
+        const seen = new Set();
+        const addresses = [];
+
+        state.parcelLayer.eachLayer((featureLayer) => {
+            const addr = featureLayer.feature._situsAddress;
+            if (!addr || seen.has(addr)) return;
+
+            // Use the polygon's bounding-box center as the test point.
+            // Good enough for lot-sized polygons — no need for a true centroid.
+            const center = featureLayer.getBounds().getCenter();
+            if (bounds.contains(center)) {
+                seen.add(addr);
+                addresses.push(addr);
+            }
+        });
+
+        // Sort numerically by street number, then alphabetically by name.
+        addresses.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+        return addresses;
+    }
+
+    /**
+     * Enter draw mode so the user can drag a rectangle on the map to select
+     * which parcel addresses to export.
+     *
+     *  1. Show the banner with export-specific instructions.
+     *  2. Activate a Leaflet.draw Rectangle handler.
+     *  3. On draw:created → collect addresses in bounds → download CSV → clean up.
+     *  4. Escape key cancels draw mode without downloading anything.
+     */
+    function startExportDrawMode() {
+        const banner = document.getElementById("draw-mode-banner");
+        const exportBtn = document.getElementById("export-addresses-btn");
+
+        // Guard: don't stack draw modes
+        if (banner.classList.contains("visible")) return;
+
+        // Update banner text for export context (area-picker uses the same element
+        // with its own text; we override it here).
+        banner.textContent =
+            "Draw a rectangle around the homes you want to export — drag to select, release to download";
+        banner.classList.add("active");
+        if (exportBtn) exportBtn.disabled = true;
+
+        // Leaflet.draw rectangle handler — indigo stroke to distinguish from
+        // the teal area-picker rectangles.
+        const drawHandler = new L.Draw.Rectangle(state.map, {
+            shapeOptions: {
+                color: "#6366f1",
+                weight: 2,
+                fillOpacity: 0.08,
+            },
+        });
+        drawHandler.enable();
+
+        // One-time listener: fires when the rectangle is released.
+        function onDrawCreated(e) {
+            cleanup();
+            const bounds    = e.layer.getBounds();
+            const addresses = addressesInBounds(bounds);
 
             if (!addresses.length) {
-                alert("No addresses returned from the parcel service. Check your internet connection or parcel config.");
+                alert("No parcel addresses found in that area. Try drawing a larger rectangle.");
                 return;
             }
 
-            // Build CSV rows.
-            // templateColumns from config defines column order + headers.
-            const cols     = cfg.templateColumns || ["Address"];
-            const addrIdx  = cols.indexOf("Address");
-            const filename = "briarcliff-addresses.csv";
-
-            // Header row — quote each column name for safety.
-            const header = cols.map((c) => `"${c.replace(/"/g, '""')}"`).join(",");
-
-            // One data row per address; all non-address columns left blank.
-            const dataRows = addresses.map((addr) => {
-                return cols
-                    .map((_, i) =>
-                        i === addrIdx ? `"${addr.replace(/"/g, '""')}"` : ""
-                    )
-                    .join(",");
-            });
-
-            const csv  = [header, ...dataRows].join("\r\n");
-            const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-            const url  = URL.createObjectURL(blob);
-
-            // Trigger a browser download by momentarily injecting an <a> tag.
-            const a = document.createElement("a");
-            a.href     = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-
+            downloadAddressCsv(addresses, "briarcliff-selection.csv");
             console.log(
-                `Dream Home: exported ${addresses.length} addresses to ${filename}`
+                `Dream Home: exported ${addresses.length} selected addresses.`
             );
-        } catch (err) {
-            console.error("Address export failed:", err);
-            alert("Export failed — see browser console for details.");
-        } finally {
-            // Always restore the button regardless of success or failure.
-            if (btn) {
-                btn.disabled = false;
-                btn.textContent = "Export addresses";
-            }
         }
+
+        // Cancel on Escape key
+        function onKeydown(e) {
+            if (e.key === "Escape") cleanup();
+        }
+
+        function cleanup() {
+            drawHandler.disable();
+            state.map.off("draw:created", onDrawCreated);
+            document.removeEventListener("keydown", onKeydown);
+            banner.classList.remove("active");
+            if (exportBtn) exportBtn.disabled = false;
+        }
+
+        state.map.on("draw:created", onDrawCreated);
+        document.addEventListener("keydown", onKeydown);
     }
 
     // Kick off once the DOM is ready.

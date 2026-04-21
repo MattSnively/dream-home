@@ -315,6 +315,11 @@
         geojson.features.forEach((f) => {
             f._matchedHome = matchParcelToHome(f, homeIndex);
             if (f._matchedHome) matchCount++;
+
+            // Cache a clean title-cased address string on each feature so that
+            // the export-by-selection tool in app.js can read addresses directly
+            // from the already-rendered layer without re-querying ArcGIS.
+            f._situsAddress = titleCaseAddress(getParcelSitusAddress(f.properties));
         });
 
         console.log(
