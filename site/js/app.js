@@ -1056,30 +1056,58 @@
     }
 
     /**
-     * Collect addresses from the already-loaded parcel layer that fall within
-     * a Leaflet LatLngBounds rectangle.
+     * Ray-casting point-in-polygon test.
+     *
+     * Determines whether a lat/lng point lies inside a polygon defined by an
+     * array of L.LatLng vertices.  Works for any convex or concave polygon.
+     *
+     * Algorithm: cast a horizontal ray from the point to the right and count
+     * how many polygon edges it crosses.  An odd count means the point is
+     * inside (Jordan curve theorem).
+     *
+     * @param {L.LatLng}   point    The point to test
+     * @param {L.LatLng[]} vertices Ordered polygon vertices from Leaflet.draw
+     * @returns {boolean}
+     */
+    function pointInPolygon(point, vertices) {
+        const px = point.lat;
+        const py = point.lng;
+        let inside = false;
+
+        for (let i = 0, j = vertices.length - 1; i < vertices.length; j = i++) {
+            const xi = vertices[i].lat, yi = vertices[i].lng;
+            const xj = vertices[j].lat, yj = vertices[j].lng;
+            // Check whether the ray from (px, py) going right crosses this edge.
+            const crosses = (yi > py) !== (yj > py) &&
+                px < ((xj - xi) * (py - yi)) / (yj - yi) + xi;
+            if (crosses) inside = !inside;
+        }
+        return inside;
+    }
+
+    /**
+     * Collect addresses from the already-loaded parcel layer whose centers
+     * fall inside the given polygon vertices.
      *
      * Each parcel polygon has `feature._situsAddress` pre-set by buildParcelLayer().
-     * We check whether the polygon's visual center (getBounds().getCenter()) falls
-     * inside the drawn rectangle — fast, no re-query needed.
+     * We use the parcel's bounding-box center as the test point — accurate
+     * enough for lot-sized polygons without needing a true centroid.
      *
-     * @param {L.LatLngBounds} bounds  Rectangle drawn by the user
-     * @returns {string[]}             Sorted, deduplicated address list
+     * @param {L.LatLng[]} vertices  Ordered polygon vertices from Leaflet.draw
+     * @returns {string[]}           Sorted, deduplicated address list
      */
-    function addressesInBounds(bounds) {
-        if (!state.parcelLayer) return [];
+    function addressesInPolygon(vertices) {
+        if (!state.parcelLayer || !vertices.length) return [];
 
-        const seen = new Set();
+        const seen      = new Set();
         const addresses = [];
 
         state.parcelLayer.eachLayer((featureLayer) => {
             const addr = featureLayer.feature._situsAddress;
             if (!addr || seen.has(addr)) return;
 
-            // Use the polygon's bounding-box center as the test point.
-            // Good enough for lot-sized polygons — no need for a true centroid.
             const center = featureLayer.getBounds().getCenter();
-            if (bounds.contains(center)) {
+            if (pointInPolygon(center, vertices)) {
                 seen.add(addr);
                 addresses.push(addr);
             }
@@ -1091,66 +1119,65 @@
     }
 
     /**
-     * Enter draw mode so the user can drag a rectangle on the map to select
+     * Enter draw mode so the user can trace a polygon on the map to select
      * which parcel addresses to export.
      *
-     *  1. Show the banner with export-specific instructions.
-     *  2. Activate a Leaflet.draw Rectangle handler.
-     *  3. On draw:created → collect addresses in bounds → download CSV → clean up.
-     *  4. Escape key cancels draw mode without downloading anything.
+     *  1. Show the banner with instructions.
+     *  2. Activate a Leaflet.draw Polygon handler.
+     *  3. On draw:created → run point-in-polygon on every parcel center →
+     *     download CSV → clean up.
+     *  4. Escape cancels without downloading.
      */
     function startExportDrawMode() {
-        const banner = document.getElementById("draw-mode-banner");
+        const banner    = document.getElementById("draw-mode-banner");
         const exportBtn = document.getElementById("export-addresses-btn");
 
-        // Guard: don't stack draw modes
-        if (banner.classList.contains("visible")) return;
+        // Guard: don't stack draw modes.
+        if (banner.classList.contains("active")) return;
 
-        // Update banner text for export context (area-picker uses the same element
-        // with its own text; we override it here).
         banner.textContent =
-            "Draw a rectangle around the homes you want to export — drag to select, release to download";
+            "Click to add points, double-click to close — all parcels inside the polygon will export";
         banner.classList.add("active");
         if (exportBtn) exportBtn.disabled = true;
 
-        // Leaflet.draw rectangle handler — indigo stroke to distinguish from
+        // Leaflet.draw polygon handler — indigo stroke to distinguish from
         // the teal area-picker rectangles.
-        const drawHandler = new L.Draw.Rectangle(state.map, {
+        const drawHandler = new L.Draw.Polygon(state.map, {
             shapeOptions: {
-                color: "#6366f1",
-                weight: 2,
+                color:       "#6366f1",
+                weight:      2,
                 fillOpacity: 0.08,
             },
+            // Show distance/area guide tooltip while drawing.
+            showArea:   false,
+            showLength: false,
         });
         drawHandler.enable();
 
-        // One-time listener: fires when the rectangle is released.
-        // Defined before registering so cleanup() can reference it for map.off().
+        // Fires when the user double-clicks to close the polygon.
         function onDrawCreated(e) {
             cleanup();
-            const bounds    = e.layer.getBounds();
-            const addresses = addressesInBounds(bounds);
+            // Leaflet.draw returns nested arrays for polygons; the outer ring
+            // is always index [0].
+            const vertices  = e.layer.getLatLngs()[0];
+            const addresses = addressesInPolygon(vertices);
 
             if (!addresses.length) {
-                alert("No parcel addresses found in that area. Try drawing a larger rectangle.");
+                alert("No parcel addresses found inside that polygon. Try a larger area.");
                 return;
             }
 
             downloadAddressCsv(addresses, "briarcliff-selection.csv");
-            console.log(
-                `Dream Home: exported ${addresses.length} selected addresses.`
-            );
+            console.log(`Dream Home: exported ${addresses.length} selected addresses.`);
         }
 
-        // Cancel on Escape key
+        // Cancel on Escape key.
         function onKeydown(e) {
             if (e.key === "Escape") cleanup();
         }
 
         function cleanup() {
             drawHandler.disable();
-            // Explicitly remove the listener — prevents double-firing if the
-            // user rapidly toggles between modes.
             state.map.off("draw:created", onDrawCreated);
             document.removeEventListener("keydown", onKeydown);
             banner.classList.remove("active");
