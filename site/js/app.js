@@ -1085,6 +1085,12 @@
             .getElementById("export-addresses-btn")
             .addEventListener("click", startExportDrawMode);
 
+        // "Copy boundary" — enters draw mode to capture a neighborhood boundary
+        // and copy/download it as GeoJSON for reference/briarcliff-west.geojson.
+        document
+            .getElementById("export-boundary-btn")
+            .addEventListener("click", startBoundaryDrawMode);
+
         // "Export scores" — downloads localStorage scores as a two-column CSV.
         document
             .getElementById("export-scores-btn")
@@ -1318,26 +1324,29 @@
     }
 
     /**
-     * Enter draw mode so the user can trace a polygon on the map to select
-     * which parcel addresses to export.
+     * Shared polygon draw-mode scaffolding.
      *
-     *  1. Show the banner with instructions.
-     *  2. Activate a Leaflet.draw Polygon handler.
-     *  3. On draw:created → run point-in-polygon on every parcel center →
-     *     download CSV → clean up.
-     *  4. Escape cancels without downloading.
+     * Enters Leaflet.draw polygon mode, shows the instruction banner, and calls
+     * onVertices(vertices) with the drawn shape's outer ring when the user
+     * double-clicks to close it.  Escape cancels without firing the callback.
+     * Both "Export addresses" and "Copy boundary" build on this so the
+     * draw/cleanup/cancel logic lives in exactly one place.
+     *
+     * @param {object} opts
+     * @param {string} opts.bannerText  Instruction text shown while drawing
+     * @param {string} opts.buttonId    Toolbar button id to disable during draw
+     * @param {(vertices: L.LatLng[]) => void} opts.onVertices  Outer-ring handler
      */
-    function startExportDrawMode() {
-        const banner    = document.getElementById("draw-mode-banner");
-        const exportBtn = document.getElementById("export-addresses-btn");
+    function startPolygonDraw(opts) {
+        const banner = document.getElementById("draw-mode-banner");
+        const button = opts.buttonId ? document.getElementById(opts.buttonId) : null;
 
         // Guard: don't stack draw modes.
         if (banner.classList.contains("active")) return;
 
-        banner.textContent =
-            "Click to add points, double-click to close — all parcels inside the polygon will export";
+        banner.textContent = opts.bannerText;
         banner.classList.add("active");
-        if (exportBtn) exportBtn.disabled = true;
+        if (button) button.disabled = true;
 
         // Leaflet.draw polygon handler — indigo stroke to distinguish from
         // the teal area-picker rectangles.
@@ -1358,16 +1367,7 @@
             cleanup();
             // Leaflet.draw returns nested arrays for polygons; the outer ring
             // is always index [0].
-            const vertices  = e.layer.getLatLngs()[0];
-            const addresses = addressesInPolygon(vertices);
-
-            if (!addresses.length) {
-                alert("No parcel addresses found inside that polygon. Try a larger area.");
-                return;
-            }
-
-            downloadAddressCsv(addresses, "briarcliff-selection.csv");
-            console.log(`Dream Home: exported ${addresses.length} selected addresses.`);
+            opts.onVertices(e.layer.getLatLngs()[0]);
         }
 
         // Cancel on Escape key.
@@ -1380,7 +1380,7 @@
             state.map.off("draw:created", onDrawCreated);
             document.removeEventListener("keydown", onKeydown);
             banner.classList.remove("active");
-            if (exportBtn) exportBtn.disabled = false;
+            if (button) button.disabled = false;
         }
 
         // Use map.on (not once) so cleanup() can remove it with map.off().
@@ -1390,6 +1390,111 @@
         state.map.off("draw:created");
         state.map.on("draw:created", onDrawCreated);
         document.addEventListener("keydown", onKeydown);
+    }
+
+    /**
+     * Draw a polygon to select which parcel addresses to export as a CSV.
+     * (Point-in-polygon over every parcel center → download briarcliff-selection.csv.)
+     */
+    function startExportDrawMode() {
+        startPolygonDraw({
+            bannerText:
+                "Click to add points, double-click to close — all parcels inside the polygon will export",
+            buttonId: "export-addresses-btn",
+            onVertices(vertices) {
+                const addresses = addressesInPolygon(vertices);
+                if (!addresses.length) {
+                    alert("No parcel addresses found inside that polygon. Try a larger area.");
+                    return;
+                }
+                downloadAddressCsv(addresses, "briarcliff-selection.csv");
+                console.log(`Dream Home: exported ${addresses.length} selected addresses.`);
+            },
+        });
+    }
+
+    /**
+     * Convert Leaflet polygon vertices into a GeoJSON Feature (Polygon).
+     *
+     * GeoJSON stores coordinates as [longitude, latitude] and requires the ring
+     * to be closed (first point repeated at the end).  This is exactly the shape
+     * scripts/check_listings.py reads to decide which listings are inside the
+     * neighborhood, so the output can be pasted straight into
+     * reference/briarcliff-west.geojson.
+     *
+     * @param {L.LatLng[]} vertices  Ordered polygon vertices from Leaflet.draw
+     * @param {string}     name      Value for properties.name
+     * @returns {object}             GeoJSON Feature
+     */
+    function verticesToGeoJson(vertices, name) {
+        // 6 decimal places ≈ 11 cm precision — plenty for a neighborhood edge.
+        const ring = vertices.map((v) => [
+            Number(v.lng.toFixed(6)),
+            Number(v.lat.toFixed(6)),
+        ]);
+        // Close the ring by repeating the first coordinate.
+        if (ring.length) ring.push(ring[0]);
+
+        return {
+            type: "Feature",
+            properties: { name: name },
+            geometry: { type: "Polygon", coordinates: [ring] },
+        };
+    }
+
+    /**
+     * Write an arbitrary text file to disk as a browser download (no server).
+     *
+     * @param {string} text      File contents
+     * @param {string} filename  Download filename
+     * @param {string} mime      MIME type (e.g. "application/geo+json")
+     */
+    function downloadTextFile(text, filename, mime) {
+        const blob = new Blob([text], { type: `${mime};charset=utf-8;` });
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement("a");
+        a.href     = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    /**
+     * Draw a polygon to capture a neighborhood BOUNDARY (not an address list).
+     *
+     * On close, the drawn shape is turned into GeoJSON, copied to the clipboard,
+     * and downloaded as briarcliff-west.geojson — the file the listing watcher
+     * reads.  Paste it over reference/briarcliff-west.geojson to tighten the
+     * "which listings count as Briarcliff West" filter.
+     */
+    function startBoundaryDrawMode() {
+        startPolygonDraw({
+            bannerText:
+                "Trace the neighborhood edge — double-click to close. The boundary GeoJSON copies to your clipboard.",
+            buttonId: "export-boundary-btn",
+            onVertices(vertices) {
+                if (vertices.length < 3) {
+                    alert("A boundary needs at least 3 points. Try again.");
+                    return;
+                }
+                const json = JSON.stringify(verticesToGeoJson(vertices, "Briarcliff West"), null, 2);
+
+                // Always download a copy; also try the clipboard for convenience.
+                downloadTextFile(json, "briarcliff-west.geojson", "application/geo+json");
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(json).then(
+                        () => alert(`Boundary copied to clipboard (${vertices.length} points) and downloaded as briarcliff-west.geojson.`),
+                        // Clipboard blocked (e.g. no HTTPS/permission) — show it to copy by hand.
+                        () => window.prompt("Copy this boundary GeoJSON:", json)
+                    );
+                } else {
+                    window.prompt("Copy this boundary GeoJSON:", json);
+                }
+                console.log(`Dream Home: captured boundary with ${vertices.length} points.`);
+            },
+        });
     }
 
     // Kick off once the DOM is ready.
