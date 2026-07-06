@@ -727,6 +727,41 @@ body {
 .assess-status.ok      { color: #059669; }
 .assess-status.warn    { color: #d97706; }
 
+/* --- Editable home facts + status dropdown ----------------------------- */
+.fact-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.22rem 0.4rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    font: inherit;
+    font-size: 0.85rem;
+    color: #111827;
+    background: #fff;
+}
+.fact-input:hover  { border-color: #d1d5db; }
+.fact-input:focus  { outline: none; border-color: #6366f1; background: #fefeff; }
+.fact-input::placeholder { color: #cbd5e1; }
+
+/* Status dropdown styled like the old chip: rounded, colored, white text.
+   Background color is set inline per status; the chevron is a CSS background
+   image (safe because the inline style uses background-color, not shorthand). */
+.status-select {
+    border: none;
+    border-radius: 999px;
+    padding: 0.18rem 1.4rem 0.18rem 0.65rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath fill='%23fff' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.55rem center;
+}
+.status-select option { color: #111827; }  /* dropdown list stays readable */
+
 /* --- Footer ------------------------------------------------------------- */
 .footer {
     padding: 0.35rem 1rem;

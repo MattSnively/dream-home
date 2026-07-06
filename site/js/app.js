@@ -58,6 +58,42 @@
         { key: "assessmentNotes", col: "Assessment Notes",    label: "Notes",               type: "text" },
     ];
 
+    // Objective home facts Matt maintains by hand (things Zillow can't auto-fill,
+    // especially for off-market homes). Rendered as inline inputs in the card's
+    // "Home details" grid.  type "money"/"number" -> numeric input; "text" -> text.
+    const EDITABLE_FACTS = [
+        { key: "priceAdjusted",    col: "List Price (Latest)", label: "List price",    type: "money" },
+        { key: "squareFootage",    col: "Square Footage",      label: "Sqft",          type: "number" },
+        { key: "bedrooms",         col: "Bedrooms",            label: "Beds",          type: "number" },
+        { key: "bathrooms",        col: "Bathrooms",           label: "Baths",         type: "number", step: "0.5" },
+        { key: "garageSpaces",     col: "Garage Spaces",       label: "Garage",        type: "number" },
+        { key: "yearBuilt",        col: "Year Built",          label: "Built",         type: "number" },
+        { key: "hoaMonthly",       col: "HOA fees (mo)",       label: "HOA/mo",        type: "money" },
+        { key: "lotSize",          col: "Lot Size",            label: "Lot",           type: "text" },
+        { key: "yardSize",         col: "Yard Size",           label: "Yard",          type: "text" },
+        { key: "finishedBasement", col: "Finished Basement",   label: "Basement",      type: "text" },
+        { key: "storage",          col: "Storage",             label: "Storage",       type: "text" },
+        { key: "formalDining",     col: "Formal Dining",       label: "Formal dining", type: "text" },
+        { key: "offices",          col: "Offices",             label: "Offices",       type: "number" },
+        { key: "floors",           col: "Floors",              label: "Floors",        type: "number" },
+    ];
+
+    // Status options for the in-card dropdown. value = canonical lowercase (drives
+    // the outline color via cfg.statusColors); sheet = the string written to the Sheet.
+    const STATUS_OPTIONS = [
+        { value: "for sale",   sheet: "For Sale",   label: "For Sale" },
+        { value: "pending",    sheet: "Pending",    label: "Pending" },
+        { value: "off-market", sheet: "Off-market", label: "Off-market" },
+        { value: "sold",       sheet: "Sold",       label: "Sold" },
+        { value: "friends",    sheet: "Friends",    label: "Friends" },
+    ];
+
+    // Every column editable in-app, used to merge the local edit cache back onto
+    // homes on load (assessments + facts + status). Desirability keeps its own cache.
+    const CACHE_SPECS = ASSESSMENT_FIELDS
+        .concat(EDITABLE_FACTS)
+        .concat([{ key: "status", col: "Status", type: "status" }]);
+
     const cfg = window.DREAM_HOME_CONFIG;
 
     // ---- Formatting helpers -----------------------------------------------
@@ -72,12 +108,6 @@
     function fmtNum(n) {
         if (n === null || n === undefined || isNaN(n)) return "—";
         return n.toLocaleString();
-    }
-
-    /** Present a string, or '—' when blank/null. */
-    function fmtStr(s) {
-        if (s === null || s === undefined || String(s).trim() === "") return "—";
-        return s;
     }
 
     /** Title-case a lowercased categorical ("for sale" → "For Sale"). */
@@ -360,7 +390,6 @@
     function openCard(home) {
         state.openHomeId = home.id;
         const body = document.getElementById("card-body");
-        const chipColor = colorForStatus(home.status);
 
         // Desirability chip — only rendered when Matt has actually rated the home.
         const scoreHtml =
@@ -389,11 +418,6 @@
             ? home.daysOnMarket + " days"
             : "—";
 
-        // Bedroom display includes "up" count if the Sheet has it filled in.
-        const bedsDisplay = home.bedrooms !== null
-            ? fmtNum(home.bedrooms) + (home.bedroomsUp !== null ? ` (${home.bedroomsUp} up)` : "")
-            : "—";
-
         // Hero image — only rendered when a Photo URL is present in the Sheet.
         const heroImgHtml = home.photoUrl
             ? `<img class="card-hero-img"
@@ -419,9 +443,7 @@
             ${heroImgHtml}
             <h3>${escapeHtml(home.address)}</h3>
             <div class="chip-row">
-                <span class="status-chip" style="background:${chipColor}">
-                    ${escapeHtml(titleCase(home.status || "unknown"))}
-                </span>
+                ${renderStatusSelect(home)}
                 ${scoreHtml}
                 ${home.neighborhood
                     ? `<span style="font-size:0.75rem;color:#6b7280;">${escapeHtml(titleCase(home.neighborhood))}</span>`
@@ -464,64 +486,9 @@
                 </div>
             </div>
 
-            <!-- Compact facts grid: two columns of attribute pairs -->
+            <!-- Editable home-details grid — type to edit, saves to the Sheet. -->
             <div class="card-section-title">Home details</div>
-            <div class="facts-grid">
-                <div class="fact-item">
-                    <span class="fact-label">Beds</span>
-                    <span class="fact-value">${escapeHtml(bedsDisplay)}</span>
-                </div>
-                <div class="fact-item">
-                    <span class="fact-label">Baths</span>
-                    <span class="fact-value">${escapeHtml(fmtNum(home.bathrooms))}</span>
-                </div>
-                <div class="fact-item">
-                    <span class="fact-label">Sqft</span>
-                    <span class="fact-value">${escapeHtml(fmtNum(home.squareFootage))}</span>
-                </div>
-                <div class="fact-item">
-                    <span class="fact-label">Built</span>
-                    <span class="fact-value">${escapeHtml(fmtNum(home.yearBuilt))}</span>
-                </div>
-                <div class="fact-item">
-                    <span class="fact-label">Garage</span>
-                    <span class="fact-value">${escapeHtml(fmtNum(home.garageSpaces))}</span>
-                </div>
-                <div class="fact-item">
-                    <span class="fact-label">HOA/mo</span>
-                    <span class="fact-value">${escapeHtml(
-                        home.hoaMonthly !== null ? fmtMoney(home.hoaMonthly) : "—"
-                    )}</span>
-                </div>
-                <div class="fact-item">
-                    <span class="fact-label">Yard</span>
-                    <span class="fact-value">${escapeHtml(titleCase(fmtStr(home.yardSize)))}</span>
-                </div>
-                <div class="fact-item">
-                    <span class="fact-label">Basement</span>
-                    <span class="fact-value">${escapeHtml(titleCase(fmtStr(home.finishedBasement)))}</span>
-                </div>
-                ${home.offices !== null ? `
-                <div class="fact-item">
-                    <span class="fact-label">Offices</span>
-                    <span class="fact-value">${escapeHtml(fmtNum(home.offices))}</span>
-                </div>` : ""}
-                ${home.floors !== null ? `
-                <div class="fact-item">
-                    <span class="fact-label">Floors</span>
-                    <span class="fact-value">${escapeHtml(fmtNum(home.floors))}</span>
-                </div>` : ""}
-                ${home.storage ? `
-                <div class="fact-item">
-                    <span class="fact-label">Storage</span>
-                    <span class="fact-value">${escapeHtml(titleCase(fmtStr(home.storage)))}</span>
-                </div>` : ""}
-                ${home.formalDining ? `
-                <div class="fact-item">
-                    <span class="fact-label">Formal dining</span>
-                    <span class="fact-value">${escapeHtml(titleCase(fmtStr(home.formalDining)))}</span>
-                </div>` : ""}
-            </div>
+            ${renderFactsGrid(home)}
 
             ${renderAssessment(home)}
 
@@ -737,16 +704,20 @@
         return null;
     }
 
-    /** Convert a Sheet cell into the in-memory value for an assessment field. */
+    /** Convert a Sheet cell into the in-memory value for an editable field. */
     function sheetValueToField(field, raw) {
         if (raw === "" || raw === null || raw === undefined) return null;
-        if (field.type === "scale") {
-            let n = parseNum(raw);
-            if (n !== null) n = Math.max(1, Math.min(field.max, Math.round(n)));
-            return n;
+        switch (field.type) {
+            case "scale": {
+                const n = parseNum(raw);
+                return n === null ? null : Math.max(1, Math.min(field.max, Math.round(n)));
+            }
+            case "toggle": return parseBool(raw);
+            case "money":  return parseMoney(raw);
+            case "number": return parseNum(raw);
+            case "status": return String(raw).trim().toLowerCase() || null;
+            default:       return String(raw).trim() || null;  // text
         }
-        if (field.type === "toggle") return parseBool(raw);
-        return String(raw).trim() || null;
     }
 
     /** Convert an in-memory assessment value into the string written to the Sheet. */
@@ -781,11 +752,12 @@
         homes.forEach((h) => {
             const cache = state.localAssessments[h.address];
             if (!cache) return;
-            ASSESSMENT_FIELDS.forEach((f) => {
+            CACHE_SPECS.forEach((f) => {
                 if (Object.prototype.hasOwnProperty.call(cache, f.col)) {
                     h[f.key] = sheetValueToField(f, cache[f.col]);
                 }
             });
+            recomputeDerived(h);  // refresh price / $-per-sqft after merging cached facts
         });
     }
 
@@ -839,14 +811,9 @@
         // 1. In-memory.
         home[field.key] = value;
 
-        // 2. Local cache (address -> { col: sheetValue }) for instant, offline display.
+        // 2. Local cache (instant, offline-safe) via the shared edit cache.
         const sheetValue = assessmentToSheetValue(field, value);
-        const cache = state.localAssessments[home.address] || {};
-        if (value === null || value === "") delete cache[field.col];
-        else cache[field.col] = sheetValue;
-        state.localAssessments[home.address] = cache;
-        try { localStorage.setItem(ASSESS_KEY, JSON.stringify(state.localAssessments)); }
-        catch (e) { console.warn("Dream Home: assessment cache write failed —", e); }
+        cacheEdit(home.address, field.col, sheetValue);
 
         // 3. Refresh button states for scale/toggle (skip for notes so the textarea
         //    keeps focus + scroll position); then show a saving indicator.
@@ -916,6 +883,112 @@
                 ${rows}
                 <div class="assess-status" id="assess-status"></div>
             </div>`;
+    }
+
+    // ---- Editable facts + status (objective fields → Sheet) ---------------
+
+    /** Write one in-app edit to the shared local cache (address -> { col: value }). */
+    function cacheEdit(address, col, sheetValue) {
+        const cache = state.localAssessments[address] || {};
+        if (sheetValue === "" || sheetValue === null || sheetValue === undefined) delete cache[col];
+        else cache[col] = sheetValue;
+        state.localAssessments[address] = cache;
+        try { localStorage.setItem(ASSESS_KEY, JSON.stringify(state.localAssessments)); }
+        catch (e) { console.warn("Dream Home: edit cache write failed —", e); }
+    }
+
+    /** Recompute derived display values (effective price, $/sqft) after an edit. */
+    function recomputeDerived(home) {
+        home.effectivePrice = (home.priceAdjusted !== null && home.priceAdjusted !== undefined)
+            ? home.priceAdjusted : home.priceOriginal;
+        home.pricePerSqft = (home.effectivePrice !== null && home.effectivePrice !== undefined && home.squareFootage)
+            ? home.effectivePrice / home.squareFootage : null;
+    }
+
+    /**
+     * Save one editable fact (Sqft, Price, Beds, …): parse the input, update the
+     * home, refresh derived values, cache locally, re-render, and write to the Sheet.
+     *
+     * @param {Object} home
+     * @param {Object} spec  One entry from EDITABLE_FACTS
+     * @param {string} rawValue  Raw <input> value
+     */
+    function saveFact(home, spec, rawValue) {
+        const value = (spec.type === "text")
+            ? (rawValue.trim() === "" ? null : rawValue.trim())
+            : (spec.type === "money" ? parseMoney(rawValue) : parseNum(rawValue));
+        home[spec.key] = value;
+        recomputeDerived(home);
+
+        const sheetValue = value === null ? "" : value;
+        cacheEdit(home.address, spec.col, sheetValue);
+        openCard(home);
+        setAssessStatus("Saving…", "pending");
+        postToSheet(home.address, { [spec.col]: sheetValue }, (ok) => {
+            if (state.openHomeId !== home.id) return;
+            setAssessStatus(
+                ok ? "Saved to your Sheet ✓" : "Saved locally — Sheet sync failed",
+                ok ? "ok" : "warn"
+            );
+        });
+    }
+
+    /**
+     * Save the listing status: update in memory, recolor the parcel outline live
+     * (status drives the stroke color), cache, re-render, and write to the Sheet.
+     *
+     * @param {Object} home
+     * @param {string|null} canonical  Canonical lowercase status, or null to clear
+     */
+    function saveStatus(home, canonical) {
+        const opt = STATUS_OPTIONS.find((o) => o.value === canonical);
+        home.status = canonical || null;
+        const sheetValue = opt ? opt.sheet : (canonical || "");
+
+        cacheEdit(home.address, "Status", sheetValue);
+        // Recolor the parcel outline immediately.
+        const colorSel = document.getElementById("color-by");
+        window.DreamHomeParcels.updateParcelColors(state.parcelLayer, colorSel ? colorSel.value : "none");
+
+        openCard(home);
+        setAssessStatus("Saving…", "pending");
+        postToSheet(home.address, { Status: sheetValue }, (ok) => {
+            if (state.openHomeId !== home.id) return;
+            setAssessStatus(
+                ok ? "Saved to your Sheet ✓" : "Saved locally — Sheet sync failed",
+                ok ? "ok" : "warn"
+            );
+        });
+    }
+
+    /** Render the status dropdown, tinted by the current status color. */
+    function renderStatusSelect(home) {
+        const known = STATUS_OPTIONS.some((o) => o.value === home.status);
+        const bg = home.status ? (cfg.statusColors[home.status] || cfg.fallbackStatusColor) : "#9ca3af";
+        const opts = [`<option value=""${!home.status ? " selected" : ""}>—</option>`]
+            .concat(STATUS_OPTIONS.map((o) =>
+                `<option value="${o.value}"${home.status === o.value ? " selected" : ""}>${o.label}</option>`))
+            .concat((!known && home.status)
+                ? [`<option value="${escapeHtml(home.status)}" selected>${escapeHtml(titleCase(home.status))}</option>`]
+                : [])
+            .join("");
+        return `<select class="status-select" data-home-id="${escapeHtml(home.id)}" style="background-color:${bg}">${opts}</select>`;
+    }
+
+    /** Render the editable Home-details grid from EDITABLE_FACTS. */
+    function renderFactsGrid(home) {
+        const items = EDITABLE_FACTS.map((f) => {
+            const val = home[f.key];
+            const shown = (val === null || val === undefined) ? "" : val;
+            const type = (f.type === "text") ? "text" : "number";
+            const step = f.step ? ` step="${f.step}"` : (f.type === "money" ? ` step="1000"` : "");
+            return `<div class="fact-item">
+                    <span class="fact-label">${f.label}</span>
+                    <input class="fact-input" type="${type}"${step} data-fact="${f.key}"
+                           value="${escapeHtml(String(shown))}" placeholder="—" />
+                </div>`;
+        }).join("");
+        return `<div class="facts-grid">${items}</div>`;
     }
 
     /**
@@ -1364,6 +1437,25 @@
             if (!home || !field) return;
             const val = ta.value.trim();
             saveAssessment(home, field, val === "" ? null : val);
+        });
+
+        // Editable home facts — save on change (the open card is the only one).
+        document.getElementById("card-body").addEventListener("change", (e) => {
+            const input = e.target.closest(".fact-input");
+            if (!input) return;
+            const home = state.allHomes.find((h) => h.id === state.openHomeId);
+            const spec = EDITABLE_FACTS.find((f) => f.key === input.dataset.fact);
+            if (!home || !spec) return;
+            saveFact(home, spec, input.value);
+        });
+
+        // Status dropdown — save + recolor the parcel outline on change.
+        document.getElementById("card-body").addEventListener("change", (e) => {
+            const sel = e.target.closest(".status-select");
+            if (!sel) return;
+            const home = state.allHomes.find((h) => h.id === sel.dataset.homeId);
+            if (!home) return;
+            saveStatus(home, sel.value || null);
         });
 
         // Filter panel — one change listener captures all inputs (status
