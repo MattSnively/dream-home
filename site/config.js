@@ -69,6 +69,7 @@ window.DREAM_HOME_CONFIG = {
         "47TH",        // NW 47th St / N 47th St
         "44TH",        // NW 44th Terrace / NW 44th St
         "43RD",        // NW 43rd Terrace / NW 43rd Ct
+        "42ND",        // NW 42nd Terrace (cul-de-sac between Claymont & Briarcliff Rd)
         "45TH",        // NW 45th St
     ],
 
