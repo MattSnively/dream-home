@@ -669,8 +669,11 @@
     /** Update the "X of Y homes" counters in the header and footer. */
     function updateCounts(visibleCount) {
         const total = state.allHomes.length;
+        // A home counts as "mapped" if it's shown on the map at all — matched to a
+        // parcel polygon OR placed as a geocoded pin. (This previously counted only
+        // geocoded pins, so it read "0 mapped" even when every parcel had matched.)
         const mapped = state.allHomes.filter(
-            (h) => h.lat !== null && h.lon !== null
+            (h) => state.matchedIds.has(h.id) || (h.lat !== null && h.lon !== null)
         ).length;
         const text = `${visibleCount} of ${total} homes visible (${mapped} mapped)`;
         document.getElementById("home-count").textContent = text;
