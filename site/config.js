@@ -115,6 +115,19 @@ window.DREAM_HOME_CONFIG = {
     // If the column is missing or blank, scoring features are quietly disabled.
     desirabilityColumn: "Desirability",
 
+    // ---- Sheet write-back (Apps Script web app) ---------------------------
+
+    // The in-app "Your assessment" form POSTs field updates here; the Apps Script
+    // upserts the home's row in the Sheet by Address. Deploy
+    // apps-script/sheet_writeback.gs and paste its Web app URL below. The token
+    // must match SHARED_SECRET in that script. (The token is public in this file —
+    // combined with the obscure URL it only deters casual writes, an accepted
+    // trade-off for this personal, single-writer project.)
+    sheetWriteback: {
+        url:   "https://script.google.com/macros/s/AKfycbzjCS4zek-4u8IWtQ-F1E0hRMHPUts_GWHd1CrOddR416MnPFDaHGIgDCph9kvhkr7Bow/exec",
+        token: "3ruqHF-nBp741GH8dmW21u3bDIq9i4hZ",
+    },
+
     // ---- Fallback circle-marker pins (un-matched homes) -------------------
 
     // Homes that couldn't be matched to a parcel polygon still show as circle
@@ -199,5 +212,15 @@ window.DREAM_HOME_CONFIG = {
         "Finished Basement",
         "Previous Listing",
         "Photo URL",
+        "Structure Desirability",
+        "Curb Appeal",
+        "Condition",
+        "Privacy",
+        "Tree Cover",
+        "Traffic Noise",
+        "Corner Lot",
+        "Cul-de-sac",
+        "Backs to Greenspace",
+        "Assessment Notes",
     ],
 };

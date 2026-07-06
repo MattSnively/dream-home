@@ -26,6 +26,8 @@
         matchedIds: new Set(), // home ids that have a matched parcel polygon
         map: null,
         localScores: {},    // address -> 1-10 score, persisted in localStorage
+        localAssessments: {}, // address -> { SheetColumn: value } assessment cache
+        openHomeId: null,   // id of the home whose card is open (async save guard)
 
         // Snapshot of the base (first-area) config fields that are overridable
         // per area.  Populated once in load() before any area switching so we
@@ -35,6 +37,26 @@
 
     // localStorage key for the score cache.
     const SCORES_KEY = "dream-home-scores";
+
+    // localStorage key for the subjective-assessment cache (mirrors SCORES_KEY).
+    const ASSESS_KEY = "dream-home-assessments";
+
+    // Subjective per-house fields Matt fills in on the map. Each maps to a Google
+    // Sheet column and saves via the write-back endpoint. Adding a field here wires
+    // it into the card form, the Sheet, and the local cache — no other changes.
+    //   type "scale"  -> 1..max buttons    "toggle" -> Yes/No    "text" -> notes box
+    const ASSESSMENT_FIELDS = [
+        { key: "structureDesirability", col: "Structure Desirability", label: "Structure",           type: "scale",  max: 10 },
+        { key: "curbAppeal",      col: "Curb Appeal",         label: "Curb appeal",         type: "scale",  max: 5 },
+        { key: "condition",       col: "Condition",           label: "Condition",           type: "scale",  max: 5 },
+        { key: "privacy",         col: "Privacy",             label: "Privacy",             type: "scale",  max: 5 },
+        { key: "treeCover",       col: "Tree Cover",          label: "Tree cover",          type: "scale",  max: 5 },
+        { key: "trafficNoise",    col: "Traffic Noise",       label: "Quiet (5 = silent)",  type: "scale",  max: 5 },
+        { key: "cornerLot",       col: "Corner Lot",          label: "Corner lot",          type: "toggle" },
+        { key: "culDeSac",        col: "Cul-de-sac",          label: "Cul-de-sac",          type: "toggle" },
+        { key: "backsGreenspace", col: "Backs to Greenspace", label: "Backs to greenspace", type: "toggle" },
+        { key: "assessmentNotes", col: "Assessment Notes",    label: "Notes",               type: "text" },
+    ];
 
     const cfg = window.DREAM_HOME_CONFIG;
 
@@ -196,6 +218,10 @@
                 return n;
             })(),
 
+            // Subjective assessment fields (Matt's manual entry → the Sheet).
+            // Parsed generically from ASSESSMENT_FIELDS so adding a field is one line.
+            ...parseAssessmentFields(row),
+
             // Filled by DreamHomeGeocode after CSV parse.
             lat: null,
             lon: null,
@@ -332,6 +358,7 @@
      *   - Notes block (only if the Sheet has notes)
      */
     function openCard(home) {
+        state.openHomeId = home.id;
         const body = document.getElementById("card-body");
         const chipColor = colorForStatus(home.status);
 
@@ -496,6 +523,8 @@
                 </div>` : ""}
             </div>
 
+            ${renderAssessment(home)}
+
             ${home.previousListingNotes ? `
                 <div class="card-section-title">Notes</div>
                 <div class="notes-block">${escapeHtml(home.previousListingNotes)}</div>
@@ -507,6 +536,7 @@
     }
 
     function closeCard() {
+        state.openHomeId = null;
         document.querySelector(".layout").classList.remove("card-open");
         document.getElementById("home-card").setAttribute("aria-hidden", "true");
     }
@@ -696,6 +726,198 @@
         });
     }
 
+    // ---- Assessment management (subjective fields → Sheet) ----------------
+
+    /** Parse a yes/no-ish cell into true / false / null. */
+    function parseBool(v) {
+        if (v === null || v === undefined || v === "") return null;
+        const s = String(v).trim().toLowerCase();
+        if (["yes", "y", "true", "1", "x"].includes(s)) return true;
+        if (["no", "n", "false", "0"].includes(s)) return false;
+        return null;
+    }
+
+    /** Convert a Sheet cell into the in-memory value for an assessment field. */
+    function sheetValueToField(field, raw) {
+        if (raw === "" || raw === null || raw === undefined) return null;
+        if (field.type === "scale") {
+            let n = parseNum(raw);
+            if (n !== null) n = Math.max(1, Math.min(field.max, Math.round(n)));
+            return n;
+        }
+        if (field.type === "toggle") return parseBool(raw);
+        return String(raw).trim() || null;
+    }
+
+    /** Convert an in-memory assessment value into the string written to the Sheet. */
+    function assessmentToSheetValue(field, value) {
+        if (value === null || value === undefined || value === "") return "";
+        if (field.type === "toggle") return value ? "Yes" : "No";
+        return value;  // scale number or notes string
+    }
+
+    /** Build the subjective-assessment fields for a home from its Sheet row. */
+    function parseAssessmentFields(row) {
+        const out = {};
+        ASSESSMENT_FIELDS.forEach((f) => { out[f.key] = sheetValueToField(f, row[f.col]); });
+        return out;
+    }
+
+    /**
+     * Read cached assessments from localStorage and merge them onto the homes.
+     * The cache holds the user's latest local intent, so it overrides Sheet values
+     * (which can lag a few minutes behind a write via the published CSV).
+     *
+     * @param {Array<Object>} homes Normalized home objects
+     */
+    function loadLocalAssessments(homes) {
+        try {
+            const raw = localStorage.getItem(ASSESS_KEY);
+            state.localAssessments = raw ? JSON.parse(raw) : {};
+        } catch (e) {
+            console.warn("Dream Home: could not read local assessments —", e);
+            state.localAssessments = {};
+        }
+        homes.forEach((h) => {
+            const cache = state.localAssessments[h.address];
+            if (!cache) return;
+            ASSESSMENT_FIELDS.forEach((f) => {
+                if (Object.prototype.hasOwnProperty.call(cache, f.col)) {
+                    h[f.key] = sheetValueToField(f, cache[f.col]);
+                }
+            });
+        });
+    }
+
+    /**
+     * POST column updates for an address to the Apps Script web app.
+     * Sends a text/plain body so the browser treats it as a "simple" request and
+     * skips the CORS preflight the Apps Script endpoint can't answer.
+     * onDone(ok) (optional) reports whether the Sheet confirmed the write.
+     *
+     * @param {string} address
+     * @param {Object} updates  { "Sheet Column": value, ... }
+     * @param {Function} [onDone]
+     */
+    function postToSheet(address, updates, onDone) {
+        const wb = cfg.sheetWriteback;
+        if (!wb || !wb.url) { if (onDone) onDone(false); return; }
+        fetch(wb.url, {
+            method: "POST",
+            // No custom headers → Content-Type defaults to text/plain → no preflight.
+            body: JSON.stringify({ token: wb.token, address: address, updates: updates }),
+        })
+            .then(async (r) => {
+                // If the JSON body is readable, trust its ok flag. Apps Script's
+                // cross-origin redirect can make the body unreadable even on a
+                // successful write, so a resolved-but-opaque response counts as ok.
+                try { const res = await r.json(); return !!(res && res.ok); }
+                catch (_) { return true; }
+            })
+            .then((ok) => { if (onDone) onDone(ok); })
+            .catch(() => { if (onDone) onDone(false); });   // network / CORS-blocked
+    }
+
+    /** Update the small save-status line under the assessment form. */
+    function setAssessStatus(msg, cls) {
+        const el = document.getElementById("assess-status");
+        if (el) {
+            el.textContent = msg;
+            el.className = "assess-status" + (cls ? " " + cls : "");
+        }
+    }
+
+    /**
+     * Save one assessment field: update the home, cache it locally (instant and
+     * offline-safe), write through to the Sheet, and reflect the result in the UI.
+     *
+     * @param {Object} home
+     * @param {Object} field  One entry from ASSESSMENT_FIELDS
+     * @param {number|boolean|string|null} value
+     */
+    function saveAssessment(home, field, value) {
+        // 1. In-memory.
+        home[field.key] = value;
+
+        // 2. Local cache (address -> { col: sheetValue }) for instant, offline display.
+        const sheetValue = assessmentToSheetValue(field, value);
+        const cache = state.localAssessments[home.address] || {};
+        if (value === null || value === "") delete cache[field.col];
+        else cache[field.col] = sheetValue;
+        state.localAssessments[home.address] = cache;
+        try { localStorage.setItem(ASSESS_KEY, JSON.stringify(state.localAssessments)); }
+        catch (e) { console.warn("Dream Home: assessment cache write failed —", e); }
+
+        // 3. Refresh button states for scale/toggle (skip for notes so the textarea
+        //    keeps focus + scroll position); then show a saving indicator.
+        if (field.type !== "text") openCard(home);
+        setAssessStatus("Saving…", "pending");
+
+        // 4. Write through to the Sheet.
+        postToSheet(home.address, { [field.col]: sheetValue }, (ok) => {
+            if (state.openHomeId !== home.id) return;   // user moved to another card
+            setAssessStatus(
+                ok ? "Saved to your Sheet ✓" : "Saved locally — Sheet sync failed",
+                ok ? "ok" : "warn"
+            );
+        });
+    }
+
+    /**
+     * Render the "Your assessment" form for a home from ASSESSMENT_FIELDS.
+     * Scale fields render 1..max buttons, toggles a Yes/No pair, notes a textarea.
+     */
+    function renderAssessment(home) {
+        const rows = ASSESSMENT_FIELDS.map((f) => {
+            const cur = home[f.key];
+
+            if (f.type === "scale") {
+                let btns = "";
+                for (let n = 1; n <= f.max; n++) {
+                    const active = cur === n ? " active" : "";
+                    btns += `<button class="assess-btn${active}" data-assess="${f.key}" data-value="${n}" type="button">${n}</button>`;
+                }
+                const clear = (cur !== null && cur !== undefined)
+                    ? `<button class="assess-btn assess-clear" data-assess="${f.key}" data-value="" type="button" title="Clear">×</button>`
+                    : "";
+                return `<div class="assess-field">
+                        <span class="assess-label">${f.label}</span>
+                        <div class="assess-btns">${btns}${clear}</div>
+                    </div>`;
+            }
+
+            if (f.type === "toggle") {
+                const yes = cur === true ? " active" : "";
+                const no = cur === false ? " active" : "";
+                const clear = (cur !== null && cur !== undefined)
+                    ? `<button class="toggle-btn toggle-clear" data-assess="${f.key}" data-value="" type="button" title="Clear">×</button>`
+                    : "";
+                return `<div class="assess-field">
+                        <span class="assess-label">${f.label}</span>
+                        <div class="assess-btns">
+                            <button class="toggle-btn${yes}" data-assess="${f.key}" data-value="yes" type="button">Yes</button>
+                            <button class="toggle-btn${no}" data-assess="${f.key}" data-value="no" type="button">No</button>
+                            ${clear}
+                        </div>
+                    </div>`;
+            }
+
+            // text (notes)
+            return `<div class="assess-field assess-field-text">
+                    <span class="assess-label">${f.label}</span>
+                    <textarea class="assess-notes" data-assess="${f.key}" rows="2"
+                              placeholder="Your notes…">${escapeHtml(cur || "")}</textarea>
+                </div>`;
+        }).join("");
+
+        return `
+            <div class="card-section-title">Your assessment</div>
+            <div class="assessment-section" data-home-id="${escapeHtml(home.id)}">
+                ${rows}
+                <div class="assess-status" id="assess-status"></div>
+            </div>`;
+    }
+
     /**
      * Persist a new desirability score for a home, update the in-memory state,
      * re-render the parcel fill gradient, and refresh the open card so the
@@ -721,6 +943,9 @@
         } catch (e) {
             console.warn("Dream Home: localStorage write failed —", e);
         }
+
+        // Also write the score through to the Sheet so it's durable across devices.
+        postToSheet(home.address, { [cfg.desirabilityColumn]: score === null ? "" : score });
 
         // 3. Re-compute per-metric ranges so the gradient rescales if this
         //    score extends or contracts the min/max.
@@ -963,6 +1188,7 @@
         // Merge any scores saved from a previous session before anything
         // renders — localStorage scores override Sheet values.
         loadLocalScores(homes);
+        loadLocalAssessments(homes);
 
         statusEl.textContent = `Parsed ${homes.length} homes.`;
 
@@ -1107,6 +1333,37 @@
             const raw   = btn.dataset.score;
             const score = raw === "" ? null : parseInt(raw, 10);
             saveLocalScore(home, score);
+        });
+
+        // Assessment scale + toggle clicks (same delegation pattern; the assess
+        // buttons use their own classes so they never collide with .score-btn).
+        document.getElementById("card-body").addEventListener("click", (e) => {
+            const btn = e.target.closest(".assess-btn, .toggle-btn");
+            if (!btn) return;
+            const section = btn.closest(".assessment-section");
+            if (!section) return;
+            const home = state.allHomes.find((h) => h.id === section.dataset.homeId);
+            const field = ASSESSMENT_FIELDS.find((f) => f.key === btn.dataset.assess);
+            if (!home || !field) return;
+            const raw = btn.dataset.value;
+            let value;
+            if (raw === "") value = null;
+            else if (field.type === "toggle") value = (raw === "yes");
+            else value = parseInt(raw, 10);
+            saveAssessment(home, field, value);
+        });
+
+        // Assessment notes — save on blur/change (not on every keystroke).
+        document.getElementById("card-body").addEventListener("change", (e) => {
+            const ta = e.target.closest(".assess-notes");
+            if (!ta) return;
+            const section = ta.closest(".assessment-section");
+            if (!section) return;
+            const home = state.allHomes.find((h) => h.id === section.dataset.homeId);
+            const field = ASSESSMENT_FIELDS.find((f) => f.key === ta.dataset.assess);
+            if (!home || !field) return;
+            const val = ta.value.trim();
+            saveAssessment(home, field, val === "" ? null : val);
         });
 
         // Filter panel — one change listener captures all inputs (status

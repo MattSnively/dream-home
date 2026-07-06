@@ -640,6 +640,93 @@ body {
     color: #ef4444;
 }
 
+/* --- "Your assessment" form -------------------------------------------- */
+.assessment-section {
+    margin-bottom: 1rem;
+}
+/* One row per field: fixed-width label + a flexible input group. */
+.assess-field {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.4rem;
+}
+/* Notes stacks its label above a full-width textarea. */
+.assess-field.assess-field-text {
+    flex-direction: column;
+    align-items: stretch;
+}
+.assess-label {
+    flex: 0 0 5.5rem;
+    font-size: 0.72rem;
+    color: #6b7280;
+}
+.assess-btns {
+    display: flex;
+    gap: 0.2rem;
+    flex: 1;
+}
+/* Scale + toggle buttons share the numbered-button look (indigo, to set them
+   apart from the amber desirability picker at the top of the card). */
+.assess-btn, .toggle-btn {
+    flex: 1;
+    padding: 0.3rem 0;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    background: #fff;
+    color: #374151;
+    font: inherit;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: background 0.12s, border-color 0.12s, color 0.12s;
+}
+.assess-btn:hover, .toggle-btn:hover {
+    border-color: #6366f1;
+    background: #eef2ff;
+    color: #3730a3;
+}
+.assess-btn.active, .toggle-btn.active {
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    border-color: #4f46e5;
+    color: #fff;
+}
+.assess-clear, .toggle-clear {
+    flex: 0 0 auto;
+    padding: 0.3rem 0.5rem;
+    color: #9ca3af;
+    border-color: #e5e7eb;
+}
+.assess-clear:hover, .toggle-clear:hover {
+    background: #fee2e2;
+    border-color: #ef4444;
+    color: #ef4444;
+}
+.assess-notes {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 0.25rem;
+    padding: 0.45rem 0.55rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font: inherit;
+    font-size: 0.8rem;
+    resize: vertical;
+}
+.assess-notes:focus {
+    outline: none;
+    border-color: #6366f1;
+}
+/* Small save-status line under the form. */
+.assess-status {
+    min-height: 1rem;
+    margin-top: 0.35rem;
+    font-size: 0.72rem;
+    color: #9ca3af;
+}
+.assess-status.pending { color: #6b7280; }
+.assess-status.ok      { color: #059669; }
+.assess-status.warn    { color: #d97706; }
+
 /* --- Footer ------------------------------------------------------------- */
 .footer {
     padding: 0.35rem 1rem;
