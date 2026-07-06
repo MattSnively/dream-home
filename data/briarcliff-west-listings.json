@@ -1,4 +1,749 @@
 {
-  "updated": null,
-  "listings": {}
+  "listings": {
+    "109 nw 44th st, kansas city, mo 64116": {
+      "addressLine1": "109 Nw 44th St",
+      "addressLine2": null,
+      "bathrooms": 3.5,
+      "bedrooms": 4,
+      "city": "Kansas City",
+      "county": "Clay",
+      "countyFips": "047",
+      "createdDate": "2026-06-21T00:00:00.000Z",
+      "daysOnMarket": 16,
+      "formattedAddress": "109 Nw 44th St, Kansas City, MO 64116",
+      "history": {
+        "2026-06-20": {
+          "daysOnMarket": 16,
+          "event": "Sale Listing",
+          "listedDate": "2026-06-20T00:00:00.000Z",
+          "listingType": "Standard",
+          "price": 450000,
+          "removedDate": null
+        }
+      },
+      "hoa": {
+        "fee": 9
+      },
+      "id": "109-Nw-44th-St,-Kansas-City,-MO-64116",
+      "lastSeenDate": "2026-07-05T08:07:20.770Z",
+      "latitude": 39.174291,
+      "listedDate": "2026-06-20T00:00:00.000Z",
+      "listingAgent": {
+        "name": "Audrah Team",
+        "phone": "9137026004"
+      },
+      "listingOffice": {
+        "email": "wayne.gray@joinreal.com",
+        "name": "Real Broker, LLC",
+        "phone": "7853299077"
+      },
+      "listingType": "Standard",
+      "longitude": -94.584272,
+      "lotSize": 19166,
+      "mlsName": "Heartland",
+      "mlsNumber": "2627254",
+      "price": 450000,
+      "propertyType": "Single Family",
+      "removedDate": null,
+      "squareFootage": 3105,
+      "state": "MO",
+      "stateFips": "29",
+      "status": "Active",
+      "yearBuilt": 1983,
+      "zipCode": "64116"
+    },
+    "217 nw 43rd st, kansas city, mo 64116": {
+      "addressLine1": "217 Nw 43rd St",
+      "addressLine2": null,
+      "bathrooms": 2.5,
+      "bedrooms": 4,
+      "city": "Kansas City",
+      "county": "Clay",
+      "countyFips": "047",
+      "createdDate": "2025-01-24T00:00:00.000Z",
+      "daysOnMarket": 162,
+      "formattedAddress": "217 Nw 43rd St, Kansas City, MO 64116",
+      "history": {
+        "2025-01-23": {
+          "daysOnMarket": 44,
+          "event": "Sale Listing",
+          "listedDate": "2025-01-23T00:00:00.000Z",
+          "listingType": "Standard",
+          "price": 363000,
+          "removedDate": "2025-03-08T00:00:00.000Z"
+        },
+        "2026-01-25": {
+          "daysOnMarket": 162,
+          "event": "Sale Listing",
+          "listedDate": "2026-01-25T00:00:00.000Z",
+          "listingType": "Standard",
+          "price": 414900,
+          "removedDate": null
+        }
+      },
+      "id": "217-Nw-43rd-St,-Kansas-City,-MO-64116",
+      "lastSeenDate": "2026-07-05T09:06:08.374Z",
+      "latitude": 39.17135,
+      "listedDate": "2026-01-25T00:00:00.000Z",
+      "listingAgent": {
+        "email": "srblong@aol.com",
+        "name": "Berry Long",
+        "phone": "8167182963"
+      },
+      "listingOffice": {
+        "email": "leighgarnett@realtyexecutives.com",
+        "name": "Realty Executives",
+        "phone": "9136424888"
+      },
+      "listingType": "Standard",
+      "longitude": -94.584614,
+      "lotSize": 16117,
+      "mlsName": "Heartland",
+      "mlsNumber": "2598000",
+      "price": 414900,
+      "propertyType": "Single Family",
+      "removedDate": null,
+      "squareFootage": 2414,
+      "state": "MO",
+      "stateFips": "29",
+      "status": "Active",
+      "yearBuilt": 1956,
+      "zipCode": "64116"
+    },
+    "226 nw 43rd st, kansas city, mo 64116": {
+      "addressLine1": "226 Nw 43rd St",
+      "addressLine2": null,
+      "bathrooms": 2.5,
+      "bedrooms": 5,
+      "city": "Kansas City",
+      "county": "Clay",
+      "countyFips": "047",
+      "createdDate": "2026-02-01T00:00:00.000Z",
+      "daysOnMarket": 4,
+      "formattedAddress": "226 Nw 43rd St, Kansas City, MO 64116",
+      "history": {
+        "2026-01-31": {
+          "daysOnMarket": 28,
+          "event": "Sale Listing",
+          "listedDate": "2026-01-31T00:00:00.000Z",
+          "listingType": "Standard",
+          "price": 424900,
+          "removedDate": "2026-02-28T00:00:00.000Z"
+        },
+        "2026-07-02": {
+          "daysOnMarket": 4,
+          "event": "Sale Listing",
+          "listedDate": "2026-07-02T00:00:00.000Z",
+          "listingType": "Standard",
+          "price": 407500,
+          "removedDate": null
+        }
+      },
+      "id": "226-Nw-43rd-St,-Kansas-City,-MO-64116",
+      "lastSeenDate": "2026-07-05T07:52:11.605Z",
+      "latitude": 39.171954,
+      "listedDate": "2026-07-02T00:00:00.000Z",
+      "listingAgent": {
+        "email": "paul@sidwellhomes.com",
+        "name": "Paul Sidwell",
+        "phone": "8168124865",
+        "website": "http://www.sidwellhomes.com"
+      },
+      "listingOffice": {
+        "email": "remaxliberty@realtor.com",
+        "name": "RE/MAX Revolution Liberty",
+        "phone": "8167819080"
+      },
+      "listingType": "Standard",
+      "longitude": -94.584925,
+      "lotSize": 16117,
+      "mlsName": "Heartland",
+      "mlsNumber": "2629397",
+      "price": 407500,
+      "propertyType": "Single Family",
+      "removedDate": null,
+      "squareFootage": 2400,
+      "state": "MO",
+      "stateFips": "29",
+      "status": "Active",
+      "yearBuilt": 1955,
+      "zipCode": "64116"
+    },
+    "3630 n briarcliff rd, kansas city, mo 64116": {
+      "addressLine1": "3630 N Briarcliff Rd",
+      "addressLine2": null,
+      "bathrooms": 5,
+      "bedrooms": 5,
+      "city": "Kansas City",
+      "county": "Clay",
+      "countyFips": "047",
+      "createdDate": "2026-05-02T00:00:00.000Z",
+      "daysOnMarket": 66,
+      "formattedAddress": "3630 N Briarcliff Rd, Kansas City, MO 64116",
+      "history": {
+        "2026-05-01": {
+          "daysOnMarket": 66,
+          "event": "Sale Listing",
+          "listedDate": "2026-05-01T00:00:00.000Z",
+          "listingType": "Standard",
+          "price": 775000,
+          "removedDate": null
+        }
+      },
+      "id": "3630-N-Briarcliff-Rd,-Kansas-City,-MO-64116",
+      "lastSeenDate": "2026-07-05T09:04:10.300Z",
+      "latitude": 39.160095,
+      "listedDate": "2026-05-01T00:00:00.000Z",
+      "listingAgent": {
+        "email": "wgraves@remax.net",
+        "name": "Wes Graves",
+        "phone": "8164558600",
+        "website": "http://www.wesgraves.com"
+      },
+      "listingOffice": {
+        "email": "dn@mykchometeam.com",
+        "name": "RE MAX Elite Realtors",
+        "phone": "8163738400",
+        "website": "http://www.eliteagentskc.com"
+      },
+      "listingType": "Standard",
+      "longitude": -94.585422,
+      "lotSize": 16553,
+      "mlsName": "Heartland",
+      "mlsNumber": "2603436",
+      "price": 775000,
+      "propertyType": "Single Family",
+      "removedDate": null,
+      "squareFootage": 4748,
+      "state": "MO",
+      "stateFips": "29",
+      "status": "Active",
+      "yearBuilt": 1945,
+      "zipCode": "64116"
+    },
+    "3706 n grand ave, kansas city, mo 64116": {
+      "addressLine1": "3706 N Grand Ave",
+      "addressLine2": null,
+      "bathrooms": 3,
+      "bedrooms": 4,
+      "city": "Kansas City",
+      "county": "Clay",
+      "countyFips": "047",
+      "createdDate": "2026-05-31T00:00:00.000Z",
+      "daysOnMarket": 36,
+      "formattedAddress": "3706 N Grand Ave, Kansas City, MO 64116",
+      "history": {
+        "2026-05-31": {
+          "daysOnMarket": 36,
+          "event": "Sale Listing",
+          "listedDate": "2026-05-31T00:00:00.000Z",
+          "listingType": "Standard",
+          "price": 365000,
+          "removedDate": null
+        }
+      },
+      "id": "3706-N-Grand-Ave,-Kansas-City,-MO-64116",
+      "lastSeenDate": "2026-07-05T08:07:20.879Z",
+      "latitude": 39.161515,
+      "listedDate": "2026-05-31T00:00:00.000Z",
+      "listingAgent": {
+        "name": "Michelle Harrington",
+        "phone": "8165872323"
+      },
+      "listingOffice": {
+        "email": "tim.neuman@remax.net",
+        "name": "RE/MAX Advantage",
+        "phone": "8169031500",
+        "website": "www.northlandhomes.net"
+      },
+      "listingType": "Standard",
+      "longitude": -94.578788,
+      "lotSize": 8400,
+      "mlsName": "Heartland",
+      "mlsNumber": "2623294",
+      "price": 365000,
+      "propertyType": "Single Family",
+      "removedDate": null,
+      "squareFootage": 2424,
+      "state": "MO",
+      "stateFips": "29",
+      "status": "Active",
+      "yearBuilt": 1956,
+      "zipCode": "64116"
+    },
+    "3832 n briarcliff rd, kansas city, mo 64116": {
+      "addressLine1": "3832 N Briarcliff Rd",
+      "addressLine2": null,
+      "bathrooms": 2,
+      "bedrooms": 3,
+      "city": "Kansas City",
+      "county": "Clay",
+      "countyFips": "047",
+      "createdDate": "2026-04-30T00:00:00.000Z",
+      "daysOnMarket": 67,
+      "formattedAddress": "3832 N Briarcliff Rd, Kansas City, MO 64116",
+      "history": {
+        "2026-04-30": {
+          "daysOnMarket": 67,
+          "event": "Sale Listing",
+          "listedDate": "2026-04-30T00:00:00.000Z",
+          "listingType": "Standard",
+          "price": 750000,
+          "removedDate": null
+        }
+      },
+      "id": "3832-N-Briarcliff-Rd,-Kansas-City,-MO-64116",
+      "lastSeenDate": "2026-07-05T09:04:10.314Z",
+      "latitude": 39.163698,
+      "listedDate": "2026-04-30T00:00:00.000Z",
+      "listingAgent": {
+        "email": "ashleysweeney@reecenichols.com",
+        "name": "Ashley Sweeney-emmons",
+        "phone": "8167282253",
+        "website": "https://sweeneyteamkc.com"
+      },
+      "listingOffice": {
+        "email": "ran17office@reecenichols.com",
+        "name": "ReeceNichols - Kansas City North/Liberty",
+        "phone": "8164688555",
+        "website": "http://reecenichols.com/kansas-city-north"
+      },
+      "listingType": "Standard",
+      "longitude": -94.588928,
+      "lotSize": 44867,
+      "mlsName": "Heartland",
+      "mlsNumber": "2616815",
+      "price": 750000,
+      "propertyType": "Single Family",
+      "removedDate": null,
+      "squareFootage": 1834,
+      "state": "MO",
+      "stateFips": "29",
+      "status": "Active",
+      "yearBuilt": 1934,
+      "zipCode": "64116"
+    },
+    "4203 n grand ave, kansas city, mo 64116": {
+      "addressLine1": "4203 N Grand Ave",
+      "addressLine2": null,
+      "bathrooms": 2,
+      "bedrooms": 4,
+      "city": "Kansas City",
+      "county": "Clay",
+      "countyFips": "047",
+      "createdDate": "2022-06-18T08:57:24.275Z",
+      "daysOnMarket": 26,
+      "formattedAddress": "4203 N Grand Ave, Kansas City, MO 64116",
+      "history": {
+        "2026-06-09": {
+          "daysOnMarket": 26,
+          "event": "Sale Listing",
+          "listedDate": "2026-06-09T00:00:00.000Z",
+          "listingType": "Standard",
+          "price": 339000,
+          "removedDate": null
+        }
+      },
+      "id": "4203-N-Grand-Ave,-Kansas-City,-MO-64116",
+      "lastSeenDate": "2026-07-04T05:31:34.738Z",
+      "latitude": 39.17089,
+      "listedDate": "2026-06-09T00:00:00.000Z",
+      "listingAgent": {
+        "email": "conniestark723@gmail.com",
+        "name": "Connie J. Stark",
+        "phone": "8165913932"
+      },
+      "listingOffice": {
+        "email": "robertlkellam@icloud.com",
+        "name": "Mo-Kan Veteran Realty Llc",
+        "phone": "8168630338"
+      },
+      "listingType": "Standard",
+      "longitude": -94.577603,
+      "lotSize": 18731,
+      "mlsName": "Heartland",
+      "mlsNumber": "2624603",
+      "price": 339000,
+      "propertyType": "Single Family",
+      "removedDate": null,
+      "squareFootage": 1623,
+      "state": "MO",
+      "stateFips": "29",
+      "status": "Active",
+      "yearBuilt": 1948,
+      "zipCode": "64116"
+    },
+    "4335 n oak trfy, north, kansas city, mo 64116": {
+      "addressLine1": "4335 N Oak Trfy",
+      "addressLine2": "North",
+      "bathrooms": 2,
+      "bedrooms": 3,
+      "city": "Kansas City",
+      "county": "Clay",
+      "countyFips": "047",
+      "createdDate": "2026-06-13T00:00:00.000Z",
+      "daysOnMarket": 22,
+      "formattedAddress": "4335 N Oak Trfy, North, Kansas City, MO 64116",
+      "history": {
+        "2026-06-13": {
+          "daysOnMarket": 22,
+          "event": "Sale Listing",
+          "listedDate": "2026-06-13T00:00:00.000Z",
+          "listingType": "Standard",
+          "price": 215000,
+          "removedDate": null
+        }
+      },
+      "id": "4335-N-Oak-Trfy,-North,-Kansas-City,-MO-64116",
+      "lastSeenDate": "2026-07-04T05:31:34.751Z",
+      "latitude": 39.173288,
+      "listedDate": "2026-06-13T00:00:00.000Z",
+      "listingAgent": {
+        "email": "jaylenn.wong@gmail.com",
+        "name": "Jaylenn Wong",
+        "phone": "6262266611"
+      },
+      "listingOffice": {
+        "email": "info@movewithplatinum.com",
+        "name": "Platinum Realty LLC",
+        "phone": "8882200988",
+        "website": "www.movewithplatinum.com"
+      },
+      "listingType": "Standard",
+      "longitude": -94.576269,
+      "lotSize": 8319,
+      "mlsName": "Heartland",
+      "mlsNumber": "2625866",
+      "price": 215000,
+      "propertyType": "Single Family",
+      "removedDate": null,
+      "squareFootage": 1693,
+      "state": "MO",
+      "stateFips": "29",
+      "status": "Active",
+      "yearBuilt": 1948,
+      "zipCode": "64116"
+    },
+    "4405 n oak trfy, kansas city, mo 64116": {
+      "addressLine1": "4405 N Oak Trfy",
+      "addressLine2": null,
+      "bathrooms": 1,
+      "bedrooms": 3,
+      "city": "Kansas City",
+      "county": "Clay",
+      "countyFips": "047",
+      "createdDate": "2026-06-13T00:00:00.000Z",
+      "daysOnMarket": 42,
+      "formattedAddress": "4405 N Oak Trfy, Kansas City, MO 64116",
+      "history": {
+        "2026-05-25": {
+          "daysOnMarket": 42,
+          "event": "Sale Listing",
+          "listedDate": "2026-05-25T00:00:00.000Z",
+          "listingType": "Standard",
+          "price": 235000,
+          "removedDate": null
+        }
+      },
+      "id": "4405-N-Oak-Trfy,-Kansas-City,-MO-64116",
+      "lastSeenDate": "2026-07-05T09:04:10.257Z",
+      "latitude": 39.174718,
+      "listedDate": "2026-05-25T00:00:00.000Z",
+      "listingAgent": {
+        "email": "nguyengrouprealty@gmail.com",
+        "name": "Tri Nguyen",
+        "phone": "8167996372"
+      },
+      "listingOffice": {
+        "email": "nguyengrouprealty@gmail.com",
+        "name": "Nguyen Group Realty",
+        "phone": "8162000489"
+      },
+      "listingType": "Standard",
+      "longitude": -94.576384,
+      "lotSize": 6970,
+      "mlsName": "Heartland",
+      "mlsNumber": "2622161",
+      "price": 235000,
+      "propertyType": "Single Family",
+      "removedDate": null,
+      "squareFootage": 1960,
+      "state": "MO",
+      "stateFips": "29",
+      "status": "Active",
+      "zipCode": "64116"
+    },
+    "4417 n oak trfy, kansas city, mo 64116": {
+      "addressLine1": "4417 N Oak Trfy",
+      "addressLine2": null,
+      "bathrooms": 2,
+      "bedrooms": 4,
+      "city": "Kansas City",
+      "county": "Clay",
+      "countyFips": "047",
+      "createdDate": "2026-05-19T00:00:00.000Z",
+      "daysOnMarket": 48,
+      "formattedAddress": "4417 N Oak Trfy, Kansas City, MO 64116",
+      "history": {
+        "2026-05-19": {
+          "daysOnMarket": 48,
+          "event": "Sale Listing",
+          "listedDate": "2026-05-19T00:00:00.000Z",
+          "listingType": "Standard",
+          "price": 130000,
+          "removedDate": null
+        }
+      },
+      "id": "4417-N-Oak-Trfy,-Kansas-City,-MO-64116",
+      "lastSeenDate": "2026-07-05T09:04:10.291Z",
+      "latitude": 39.175274,
+      "listedDate": "2026-05-19T00:00:00.000Z",
+      "listingAgent": {
+        "email": "lemuel.coleman@exprealty.com",
+        "name": "Lem Coleman",
+        "phone": "8166515711",
+        "website": "https://lemuelcoleman.exprealty.com/"
+      },
+      "listingOffice": {
+        "email": "chris.cribb@exprealty.net",
+        "name": "Exp Realty Llc",
+        "phone": "8662241761",
+        "website": "www.exprealty.com"
+      },
+      "listingType": "Standard",
+      "longitude": -94.576288,
+      "lotSize": 9142,
+      "mlsName": "Heartland",
+      "mlsNumber": "2620993",
+      "price": 130000,
+      "propertyType": "Single Family",
+      "removedDate": null,
+      "squareFootage": 1727,
+      "state": "MO",
+      "stateFips": "29",
+      "status": "Active",
+      "zipCode": "64116"
+    },
+    "4501 nw baltimore ct, kansas city, mo 64116": {
+      "addressLine1": "4501 Nw Baltimore Ct",
+      "addressLine2": null,
+      "bathrooms": 4.5,
+      "bedrooms": 4,
+      "city": "Kansas City",
+      "county": "Clay",
+      "countyFips": "047",
+      "createdDate": "2025-09-19T00:00:00.000Z",
+      "daysOnMarket": 152,
+      "formattedAddress": "4501 Nw Baltimore Ct, Kansas City, MO 64116",
+      "history": {
+        "2025-09-17": {
+          "daysOnMarket": 64,
+          "event": "Sale Listing",
+          "listedDate": "2025-09-17T00:00:00.000Z",
+          "listingType": "Standard",
+          "price": 495000,
+          "removedDate": "2025-11-20T00:00:00.000Z"
+        },
+        "2026-02-04": {
+          "daysOnMarket": 152,
+          "event": "Sale Listing",
+          "listedDate": "2026-02-04T00:00:00.000Z",
+          "listingType": "Standard",
+          "price": 579000,
+          "removedDate": null
+        }
+      },
+      "id": "4501-Nw-Baltimore-Ct,-Kansas-City,-MO-64116",
+      "lastSeenDate": "2026-07-05T09:06:08.369Z",
+      "latitude": 39.176437,
+      "listedDate": "2026-02-04T00:00:00.000Z",
+      "listingAgent": {
+        "email": "jaylenn.wong@gmail.com",
+        "name": "Jaylenn Wong",
+        "phone": "6262266611"
+      },
+      "listingOffice": {
+        "email": "info@movewithplatinum.com",
+        "name": "Platinum Realty LLC",
+        "phone": "8882200988",
+        "website": "www.movewithplatinum.com"
+      },
+      "listingType": "Standard",
+      "longitude": -94.582058,
+      "lotSize": 13939,
+      "mlsName": "Heartland",
+      "mlsNumber": "2599300",
+      "price": 579000,
+      "propertyType": "Single Family",
+      "removedDate": null,
+      "squareFootage": 5320,
+      "state": "MO",
+      "stateFips": "29",
+      "status": "Active",
+      "yearBuilt": 1986,
+      "zipCode": "64116"
+    },
+    "500 ne 44th st, kansas city, mo 64116": {
+      "addressLine1": "500 Ne 44th St",
+      "addressLine2": null,
+      "bathrooms": 2,
+      "bedrooms": 3,
+      "city": "Kansas City",
+      "county": "Clay",
+      "countyFips": "047",
+      "createdDate": "2025-08-17T00:00:00.000Z",
+      "daysOnMarket": 8,
+      "formattedAddress": "500 Ne 44th St, Kansas City, MO 64116",
+      "history": {
+        "2025-08-16": {
+          "daysOnMarket": 9,
+          "event": "Sale Listing",
+          "listedDate": "2025-08-16T00:00:00.000Z",
+          "listingType": "Standard",
+          "price": 224900,
+          "removedDate": "2025-08-25T00:00:00.000Z"
+        },
+        "2026-06-26": {
+          "daysOnMarket": 8,
+          "event": "Sale Listing",
+          "listedDate": "2026-06-26T00:00:00.000Z",
+          "listingType": "Standard",
+          "price": 235000,
+          "removedDate": null
+        }
+      },
+      "id": "500-Ne-44th-St,-Kansas-City,-MO-64116",
+      "lastSeenDate": "2026-07-03T05:37:57.116Z",
+      "latitude": 39.174481,
+      "listedDate": "2026-06-26T00:00:00.000Z",
+      "listingAgent": {
+        "email": "daniel@danjoneskc.com",
+        "name": "Daniel Jones",
+        "phone": "9132446473",
+        "website": "https://www.danjoneskc.com/"
+      },
+      "listingOffice": {
+        "email": "info@movewithplatinum.com",
+        "name": "Platinum Realty LLC",
+        "phone": "8882200988",
+        "website": "www.movewithplatinum.com"
+      },
+      "listingType": "Standard",
+      "longitude": -94.575749,
+      "lotSize": 6534,
+      "mlsName": "Heartland",
+      "mlsNumber": "2627859",
+      "price": 235000,
+      "propertyType": "Single Family",
+      "removedDate": null,
+      "squareFootage": 1448,
+      "state": "MO",
+      "stateFips": "29",
+      "status": "Active",
+      "yearBuilt": 1941,
+      "zipCode": "64116"
+    },
+    "623 ne woodlawn st, kansas city, mo 64116": {
+      "addressLine1": "623 Ne Woodlawn St",
+      "addressLine2": null,
+      "bathrooms": 2,
+      "bedrooms": 4,
+      "city": "Kansas City",
+      "county": "Clay",
+      "countyFips": "047",
+      "createdDate": "2026-04-04T00:00:00.000Z",
+      "daysOnMarket": 94,
+      "formattedAddress": "623 Ne Woodlawn St, Kansas City, MO 64116",
+      "history": {
+        "2026-04-03": {
+          "daysOnMarket": 94,
+          "event": "Sale Listing",
+          "listedDate": "2026-04-03T00:00:00.000Z",
+          "listingType": "Standard",
+          "price": 250000,
+          "removedDate": null
+        }
+      },
+      "id": "623-Ne-Woodlawn-St,-Kansas-City,-MO-64116",
+      "lastSeenDate": "2026-07-05T09:06:08.261Z",
+      "latitude": 39.165062,
+      "listedDate": "2026-04-03T00:00:00.000Z",
+      "listingAgent": {
+        "name": "Cjco Team",
+        "phone": "9134022550"
+      },
+      "listingOffice": {
+        "email": "donburns@reecenichols.com",
+        "name": "ReeceNichols - Leawood",
+        "phone": "9138517300",
+        "website": "http://www.reecenichols.com/leawood"
+      },
+      "listingType": "Standard",
+      "longitude": -94.573683,
+      "lotSize": 11761,
+      "mlsName": "Heartland",
+      "mlsNumber": "2612113",
+      "price": 250000,
+      "propertyType": "Single Family",
+      "removedDate": null,
+      "squareFootage": 1700,
+      "state": "MO",
+      "stateFips": "29",
+      "status": "Active",
+      "yearBuilt": 1958,
+      "zipCode": "64116"
+    },
+    "808 ne russell rd, kansas city, mo 64116": {
+      "addressLine1": "808 Ne Russell Rd",
+      "addressLine2": null,
+      "bathrooms": 2,
+      "bedrooms": 3,
+      "city": "Kansas City",
+      "county": "Clay",
+      "countyFips": "047",
+      "createdDate": "2026-02-04T00:00:00.000Z",
+      "daysOnMarket": 153,
+      "formattedAddress": "808 Ne Russell Rd, Kansas City, MO 64116",
+      "history": {
+        "2026-02-03": {
+          "daysOnMarket": 153,
+          "event": "Sale Listing",
+          "listedDate": "2026-02-03T00:00:00.000Z",
+          "listingType": "Standard",
+          "price": 324900,
+          "removedDate": null
+        }
+      },
+      "id": "808-Ne-Russell-Rd,-Kansas-City,-MO-64116",
+      "lastSeenDate": "2026-07-05T09:06:08.371Z",
+      "latitude": 39.166944,
+      "listedDate": "2026-02-03T00:00:00.000Z",
+      "listingAgent": {
+        "email": "heather@thespearrealtygroup.com",
+        "name": "Heather Walker",
+        "phone": "9135151613"
+      },
+      "listingOffice": {
+        "email": "ran20office@reecenichols.com",
+        "name": "ReeceNichols - Lee's Summit",
+        "phone": "8165247272",
+        "website": "http://www.reecenichols.com/lees-summit"
+      },
+      "listingType": "Standard",
+      "longitude": -94.570575,
+      "lotSize": 12197,
+      "mlsName": "Heartland",
+      "mlsNumber": "2599101",
+      "price": 324900,
+      "propertyType": "Single Family",
+      "removedDate": null,
+      "squareFootage": 1730,
+      "state": "MO",
+      "stateFips": "29",
+      "status": "Active",
+      "yearBuilt": 1950,
+      "zipCode": "64116"
+    }
+  },
+  "updated": "2026-07-06T02:10:04.658425+00:00"
 }
