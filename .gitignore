@@ -9,4 +9,8 @@ desktop.ini
 *.swp
 *.swo
 
+# Python (scripts/)
+__pycache__/
+*.pyc
+
 # No build artifacts — this is a pure static site, nothing to ignore there.

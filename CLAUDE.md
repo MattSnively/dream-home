@@ -14,9 +14,28 @@ Detail pane for quick house highlights
 ## Architecture
 
 ```
-Google Sheet (published as CSV)
-**needs update here
+Browser (static site)                        Automation (GitHub Actions)
+  site/index.html + css + js                   .github/workflows/listing-watch.yml (daily cron)
+  reads ── Google Sheet (published CSV) ──┐      └─ scripts/check_listings.py
+  geocodes via US Census Geocoder         │           ├─ RentCast API (active listings)
+  renders Leaflet map + KPI cards         │           ├─ filter to reference/briarcliff-west.geojson
+                                          │           ├─ diff vs data/briarcliff-west-listings.json
+  deployed to GitHub Pages ───────────────┘           ├─ email mattsnively@gmail.com (Gmail SMTP)
+  (.github/workflows/deploy.yml on push)              └─ commit updated snapshot
 ```
+
+## Listing watch (Briarcliff West)
+
+A daily GitHub Action (`listing-watch.yml`) runs `scripts/check_listings.py`, which queries
+RentCast for active for-sale listings near Briarcliff West, trims them to the exact
+neighbourhood with a point-in-polygon test against `reference/briarcliff-west.geojson`, diffs
+against `data/briarcliff-west-listings.json`, and emails Matt on anything new. Scope is
+**Briarcliff West only** — the polygon is the boundary; refine it via the map's freeform-draw
+export. Setup and required secrets are in `scripts/README.md`.
+
+Direct Zillow/Realtor scraping is intentionally **not** used: both block bots and forbid it in
+their ToS. RentCast is a licensed data source whose free tier covers one daily neighbourhood
+check. New listings can lag up to ~a day — the tradeoff for a compliant, free, durable feed.
 
 ## Data source
 

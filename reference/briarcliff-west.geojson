@@ -1,0 +1,20 @@
+{
+  "type": "Feature",
+  "properties": {
+    "name": "Briarcliff West",
+    "_SEED_APPROXIMATE": "This is an approximate starter boundary so the listing watcher works on day one. It is a rough rectangle around the Briarcliff West street cluster (Mulberry / Hickory / Holly / Pointe / Briar Point / Wildwood / Briarcliff / 43rd-47th / Belleview) and MAY still include some Claymont parcels. To tighten it: open the map, use the freeform-polygon draw tool to trace the real Briarcliff West edge, export the GeoJSON, and replace the coordinates below. check_listings.py reads the first (outer) ring of this polygon.",
+    "_coordinate_order": "GeoJSON is [longitude, latitude]"
+  },
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [-94.595, 39.180],
+        [-94.570, 39.180],
+        [-94.570, 39.155],
+        [-94.595, 39.155],
+        [-94.595, 39.180]
+      ]
+    ]
+  }
+}

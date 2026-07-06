@@ -13,6 +13,10 @@ on:
   push:
     branches:
       - master
+    # The listing watcher commits snapshot updates under data/. Those are
+    # data-only commits with no site changes, so skip the Pages rebuild for them.
+    paths-ignore:
+      - 'data/**'
   # Allow triggering a deploy manually from the GitHub Actions tab.
   workflow_dispatch:
 
