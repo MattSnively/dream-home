@@ -92,7 +92,10 @@
     // homes on load (assessments + facts + status). Desirability keeps its own cache.
     const CACHE_SPECS = ASSESSMENT_FIELDS
         .concat(EDITABLE_FACTS)
-        .concat([{ key: "status", col: "Status", type: "status" }]);
+        .concat([
+            { key: "status",   col: "Status",     type: "status" },
+            { key: "excluded", col: "Not a Home", type: "toggle" },
+        ]);
 
     const cfg = window.DREAM_HOME_CONFIG;
 
@@ -209,6 +212,7 @@
             addressRaw: rawAddress,
             status: parseCategorical(row["Status"]),
             neighborhood: parseCategorical(row["Neighborhood"]),
+            excluded: parseBool(row["Not a Home"]),  // "un-tracked" parcels (park, business, etc.)
             priceOriginal,
             priceAdjusted,
             effectivePrice,
@@ -448,6 +452,11 @@
                 ${home.neighborhood
                     ? `<span style="font-size:0.75rem;color:#6b7280;">${escapeHtml(titleCase(home.neighborhood))}</span>`
                     : ""}
+                <button class="untrack-btn${home.excluded ? " active" : ""}"
+                        data-home-id="${escapeHtml(home.id)}" type="button"
+                        title="Mark as not a home (park, business, etc.) to de-emphasize it on the map">
+                    ${home.excluded ? "↩ Track this again" : "🚫 Not a home"}
+                </button>
             </div>
             <a class="zillow-link"
                href="${escapeHtml(zillowUrl(home))}"
@@ -583,6 +592,8 @@
         const desirMin   = numOrNull("desir-min");
         const desirMax   = numOrNull("desir-max");
         const hideUnscored = document.getElementById("hide-unscored").checked;
+        const huEl = document.getElementById("hide-untracked");
+        const hideUntracked = huEl ? huEl.checked : false;
 
         // Null home values always pass the range check — we don't want to
         // hide a home just because Matt hasn't filled in every column yet.
@@ -594,6 +605,7 @@
         };
 
         return (h) => {
+            if (h.excluded && hideUntracked) return false;
             if (h.status && !allowedStatuses.has(h.status)) return false;
             if (h.neighborhood && !allowedNbs.has(h.neighborhood)) return false;
             if (!inRange(h.effectivePrice, priceMin, priceMax)) return false;
@@ -993,6 +1005,29 @@
                 </div>`;
         }).join("");
         return `<div class="facts-grid">${items}</div>`;
+    }
+
+    /**
+     * Un-track / re-track a parcel: mark it "not a home" (park, business, retention
+     * pond, etc.), which drops its outline to a faint grey so it stops cluttering
+     * the map. Updates the map + filters live and writes "Not a Home" to the Sheet.
+     *
+     * @param {Object} home
+     * @param {boolean} value  true = un-track, false = track again
+     */
+    function saveExcluded(home, value) {
+        home.excluded = value;
+        cacheEdit(home.address, "Not a Home", value ? "Yes" : "");
+        applyFilters();   // re-style parcels (de-emphasize) + honor "Hide un-tracked"
+        openCard(home);   // refresh the toggle label (fact inputs already blur-saved)
+        setAssessStatus("Saving…", "pending");
+        postToSheet(home.address, { "Not a Home": value ? "Yes" : "No" }, (ok) => {
+            if (state.openHomeId !== home.id) return;
+            setAssessStatus(
+                ok ? "Saved to your Sheet ✓" : "Saved locally — Sheet sync failed",
+                ok ? "ok" : "warn"
+            );
+        });
     }
 
     /**
@@ -1460,6 +1495,15 @@
             const home = state.allHomes.find((h) => h.id === sel.dataset.homeId);
             if (!home) return;
             saveStatus(home, sel.value || null);
+        });
+
+        // "Not a home" toggle — un-track / re-track the parcel.
+        document.getElementById("card-body").addEventListener("click", (e) => {
+            const btn = e.target.closest(".untrack-btn");
+            if (!btn) return;
+            const home = state.allHomes.find((h) => h.id === btn.dataset.homeId);
+            if (!home) return;
+            saveExcluded(home, !home.excluded);
         });
 
         // Filter panel — one change listener captures all inputs (status

@@ -222,5 +222,6 @@ window.DREAM_HOME_CONFIG = {
         "Cul-de-sac",
         "Backs to Greenspace",
         "Assessment Notes",
+        "Not a Home",
     ],
 };

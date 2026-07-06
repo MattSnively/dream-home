@@ -203,6 +203,18 @@
             };
         }
 
+        if (home.excluded) {
+            // Un-tracked (park, business, etc.) — faint grey outline, no fill, so
+            // it recedes visually without disappearing entirely.
+            return {
+                color: "#d1d5db",
+                weight: 0.8,
+                fillColor: "transparent",
+                fillOpacity: 0,
+                opacity: 0.55,
+            };
+        }
+
         const statusColor = cfg.statusColors[home.status] || cfg.fallbackStatusColor;
         const fillColor   = fillColorForHome(home);
         const hasFill     = fillColor !== null && fillColor !== undefined;
