@@ -71,6 +71,14 @@ window.DREAM_HOME_CONFIG = {
         "43RD",        // NW 43rd Terrace / NW 43rd Ct
         "42ND",        // NW 42nd Terrace (cul-de-sac between Claymont & Briarcliff Rd)
         "45TH",        // NW 45th St
+        "WHITE OAK",      // White Oak Ln
+        "CLAYMONT WOODS", // NW Claymont Woods Dr
+        "JARBOE",         // N Jarboe Ct
+        "40TH",           // NW 40th St / NW 40th Ter
+        "41ST",           // NW 41st St
+        "HAWTHORNE",      // NW Hawthorne Cr
+        "SAGAMORE",       // NW Sagamore Ln
+        "WILLOW",         // NW Willow Dr
     ],
 
     // ---- Geocoding defaults -----------------------------------------------
