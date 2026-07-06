@@ -922,7 +922,8 @@
 
         const sheetValue = value === null ? "" : value;
         cacheEdit(home.address, spec.col, sheetValue);
-        openCard(home);
+        // No full re-render here: that would recreate the inputs and break
+        // tab-through entry. Derived price/$-sqft refresh on the next card open.
         setAssessStatus("Saving…", "pending");
         postToSheet(home.address, { [spec.col]: sheetValue }, (ok) => {
             if (state.openHomeId !== home.id) return;
@@ -946,11 +947,14 @@
         const sheetValue = opt ? opt.sheet : (canonical || "");
 
         cacheEdit(home.address, "Status", sheetValue);
-        // Recolor the parcel outline immediately.
+        // Recolor the parcel outline immediately, and the dropdown itself, without
+        // a full re-render (which would clobber any in-progress fact edits).
         const colorSel = document.getElementById("color-by");
         window.DreamHomeParcels.updateParcelColors(state.parcelLayer, colorSel ? colorSel.value : "none");
+        const sel = document.querySelector("#card-body .status-select");
+        if (sel) sel.style.backgroundColor = home.status
+            ? (cfg.statusColors[home.status] || cfg.fallbackStatusColor) : "#9ca3af";
 
-        openCard(home);
         setAssessStatus("Saving…", "pending");
         postToSheet(home.address, { Status: sheetValue }, (ok) => {
             if (state.openHomeId !== home.id) return;
