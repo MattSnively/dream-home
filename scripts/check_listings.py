@@ -298,24 +298,39 @@ def deep_links(home):
     return zillow, realtor, google
 
 
-def build_email_html(homes, forced):
+def build_email_html(homes, mode, new_keys=None):
     """
     Render the HTML body listing each home with its key facts and lookup links.
-    `forced` just tweaks the intro copy for --force-email sample sends.
+
+    mode:
+      "alert"   -> just the new listings ("New listing(s) detected").
+      "summary" -> the weekly Friday roundup of ALL active listings; any that are
+                   new since the last run get a red NEW badge.
+    new_keys: set of normalized addresses considered new (for the badge).
     """
-    intro = (
-        "Here are the currently active Briarcliff West listings (sample send):"
-        if forced else
-        "New Briarcliff West listing(s) detected:"
-    )
+    new_keys = new_keys or set()
+    if mode == "summary":
+        intro = (f"Your weekly Briarcliff West summary — {len(homes)} active "
+                 f"listing(s) right now:") if homes else (
+                 "Your weekly Briarcliff West summary — no active listings right "
+                 "now. Still watching.")
+    else:  # alert
+        intro = "New Briarcliff West listing(s) detected:"
+
     rows = []
     for home in homes:
         address = home.get("formattedAddress") or home.get("addressLine1") or "Unknown address"
+        key = normalize_addr(home.get("formattedAddress") or home.get("addressLine1"))
         beds = home.get("bedrooms")
         baths = home.get("bathrooms")
         sqft = home.get("squareFootage")
         listed = home.get("listedDate") or home.get("createdDate") or "—"
         zillow, realtor, google = deep_links(home)
+
+        # Flag new listings inside the weekly summary so they still stand out.
+        new_badge = ('<span style="background:#dc2626;color:#fff;font-size:11px;'
+                     'font-weight:700;padding:1px 6px;border-radius:4px;margin-left:6px;">'
+                     'NEW</span>') if key in new_keys else ""
 
         facts = " · ".join(part for part in [
             f"{beds} bd" if beds not in (None, "") else "",
@@ -325,7 +340,7 @@ def build_email_html(homes, forced):
 
         rows.append(f"""
           <div style="margin:0 0 18px;padding:14px 16px;border:1px solid #e5e7eb;border-radius:10px;">
-            <div style="font-size:16px;font-weight:600;color:#111827;">{address}</div>
+            <div style="font-size:16px;font-weight:600;color:#111827;">{address}{new_badge}</div>
             <div style="font-size:18px;font-weight:700;color:#047857;margin:4px 0;">{money(home.get('price'))}</div>
             <div style="font-size:13px;color:#6b7280;">{facts or '&nbsp;'}</div>
             <div style="font-size:12px;color:#9ca3af;margin-top:4px;">Listed: {listed}</div>
@@ -348,17 +363,22 @@ def build_email_html(homes, forced):
 </body></html>"""
 
 
-def send_email(homes, forced, gmail_address, gmail_app_password):
+def send_email(homes, mode, new_keys, gmail_address, gmail_app_password):
     """
-    Send the alert email via Gmail SMTP over SSL.  Requires an App Password
-    (not the normal account password) with 2-Step Verification enabled.
+    Send an email via Gmail SMTP over SSL.  mode is "alert" (only the new
+    listings) or "summary" (the weekly Friday roundup of all active listings,
+    with new ones flagged).  Requires a Gmail App Password with 2-Step
+    Verification enabled.
     """
     count = len(homes)
-    if forced and count == 0:
-        subject = "Dream Home — Briarcliff West watch (no active listings right now)"
-    elif forced:
-        subject = f"Dream Home — Briarcliff West watch (sample: {count} active)"
-    else:
+    n_new = len(new_keys or set())
+    if mode == "summary":
+        if count == 0:
+            subject = "📋 Weekly Briarcliff West summary — no active listings"
+        else:
+            new_note = f" · {n_new} new" if n_new else ""
+            subject = f"📋 Weekly Briarcliff West summary — {count} active{new_note}"
+    else:  # alert
         plural = "s" if count != 1 else ""
         subject = f"🏡 {count} new Briarcliff West listing{plural}"
 
@@ -371,7 +391,7 @@ def send_email(homes, forced, gmail_address, gmail_app_password):
         f"{count} listing(s). View the map at {MAP_URL} "
         "(enable HTML to see the formatted details)."
     )
-    msg.add_alternative(build_email_html(homes, forced), subtype="html")
+    msg.add_alternative(build_email_html(homes, mode, new_keys), subtype="html")
 
     try:
         with smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=30) as smtp:
@@ -431,12 +451,25 @@ def post_to_sheet(homes, webhook_url, webhook_token):
 # Main
 # ---------------------------------------------------------------------------
 
+def is_friday_central():
+    """
+    True if it's Friday in Matt's timezone (America/Chicago) — the day we send the
+    weekly summary. Falls back to a UTC check if the tz database is missing (the
+    cron fires at 13:00 UTC, the same weekday as Central at that hour).
+    """
+    try:
+        from zoneinfo import ZoneInfo
+        return datetime.now(ZoneInfo("America/Chicago")).weekday() == 4  # Mon=0 … Fri=4
+    except Exception:
+        return datetime.now(timezone.utc).weekday() == 4
+
+
 def main():
     parser = argparse.ArgumentParser(description="Briarcliff West new-listing watcher")
     parser.add_argument("--dry-run", action="store_true",
                         help="Fetch/filter/diff only. Send no email and write no snapshot.")
     parser.add_argument("--force-email", action="store_true",
-                        help="Email the current matched listings even if none are new.")
+                        help="Send the weekly summary now (all current actives), regardless of the day.")
     args = parser.parse_args()
 
     # --- Credentials from the environment (set as GitHub Action secrets) -----
@@ -468,17 +501,27 @@ def main():
         print(f"    + {home.get('formattedAddress', '?')} — {money(home.get('price'))}")
 
     # --- Dry run stops here (no side effects) -------------------------------
+    friday = is_friday_central()
     if args.dry_run:
-        print("Dry run: no email sent, snapshot not written.")
+        print(f"Dry run (weekly-summary day = {friday}): no email sent, snapshot not written.")
         return
 
     # --- 4. Email -----------------------------------------------------------
-    should_email = bool(new_listings) or args.force_email
-    if should_email:
+    # Alert-only on most days; on Fridays send the weekly summary of all active
+    # listings instead (any new ones flagged). --force-email forces the summary.
+    new_keys = {normalize_addr(h.get("formattedAddress") or h.get("addressLine1"))
+                for h in new_listings}
+
+    if friday or args.force_email:
         if not gmail_address or not gmail_app_password:
             sys.exit("ERROR: GMAIL_ADDRESS and GMAIL_APP_PASSWORD must be set to send email.")
-        homes_to_send = new_listings if new_listings else list(current_by_key.values())
-        send_email(homes_to_send, args.force_email, gmail_address, gmail_app_password)
+        actives = sorted(current_by_key.values(),
+                         key=lambda h: (h.get("price") or 0), reverse=True)
+        send_email(actives, "summary", new_keys, gmail_address, gmail_app_password)
+    elif new_listings:
+        if not gmail_address or not gmail_app_password:
+            sys.exit("ERROR: GMAIL_ADDRESS and GMAIL_APP_PASSWORD must be set to send email.")
+        send_email(new_listings, "alert", new_keys, gmail_address, gmail_app_password)
     else:
         print("  nothing new — no email.")
 
