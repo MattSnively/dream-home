@@ -9,11 +9,11 @@
       "county": "Clay",
       "countyFips": "047",
       "createdDate": "2026-06-21T00:00:00.000Z",
-      "daysOnMarket": 18,
+      "daysOnMarket": 19,
       "formattedAddress": "109 Nw 44th St, Kansas City, MO 64116",
       "history": {
         "2026-06-20": {
-          "daysOnMarket": 18,
+          "daysOnMarket": 19,
           "event": "Sale Listing",
           "listedDate": "2026-06-20T00:00:00.000Z",
           "listingType": "Standard",
@@ -25,7 +25,7 @@
         "fee": 9
       },
       "id": "109-Nw-44th-St,-Kansas-City,-MO-64116",
-      "lastSeenDate": "2026-07-07T09:01:55.198Z",
+      "lastSeenDate": "2026-07-08T06:41:12.505Z",
       "latitude": 39.174291,
       "listedDate": "2026-06-20T00:00:00.000Z",
       "listingAgent": {
@@ -61,7 +61,7 @@
       "county": "Clay",
       "countyFips": "047",
       "createdDate": "2025-01-24T00:00:00.000Z",
-      "daysOnMarket": 164,
+      "daysOnMarket": 165,
       "formattedAddress": "217 Nw 43rd St, Kansas City, MO 64116",
       "history": {
         "2025-01-23": {
@@ -73,7 +73,7 @@
           "removedDate": "2025-03-08T00:00:00.000Z"
         },
         "2026-01-25": {
-          "daysOnMarket": 164,
+          "daysOnMarket": 165,
           "event": "Sale Listing",
           "listedDate": "2026-01-25T00:00:00.000Z",
           "listingType": "Standard",
@@ -82,7 +82,7 @@
         }
       },
       "id": "217-Nw-43rd-St,-Kansas-City,-MO-64116",
-      "lastSeenDate": "2026-07-07T10:03:37.633Z",
+      "lastSeenDate": "2026-07-08T08:43:38.003Z",
       "latitude": 39.17135,
       "listedDate": "2026-01-25T00:00:00.000Z",
       "listingAgent": {
@@ -119,7 +119,7 @@
       "county": "Clay",
       "countyFips": "047",
       "createdDate": "2026-02-01T00:00:00.000Z",
-      "daysOnMarket": 6,
+      "daysOnMarket": 7,
       "formattedAddress": "226 Nw 43rd St, Kansas City, MO 64116",
       "history": {
         "2026-01-31": {
@@ -131,7 +131,7 @@
           "removedDate": "2026-02-28T00:00:00.000Z"
         },
         "2026-07-02": {
-          "daysOnMarket": 6,
+          "daysOnMarket": 7,
           "event": "Sale Listing",
           "listedDate": "2026-07-02T00:00:00.000Z",
           "listingType": "Standard",
@@ -140,7 +140,7 @@
         }
       },
       "id": "226-Nw-43rd-St,-Kansas-City,-MO-64116",
-      "lastSeenDate": "2026-07-07T08:11:35.347Z",
+      "lastSeenDate": "2026-07-08T06:08:08.913Z",
       "latitude": 39.171954,
       "listedDate": "2026-07-02T00:00:00.000Z",
       "listingAgent": {
@@ -178,11 +178,11 @@
       "county": "Clay",
       "countyFips": "047",
       "createdDate": "2026-07-07T00:00:00.000Z",
-      "daysOnMarket": 2,
+      "daysOnMarket": 3,
       "formattedAddress": "4126 Nw Claymont Dr, Kansas City, MO 64116",
       "history": {
         "2026-07-06": {
-          "daysOnMarket": 2,
+          "daysOnMarket": 3,
           "event": "Sale Listing",
           "listedDate": "2026-07-06T00:00:00.000Z",
           "listingType": "Standard",
@@ -194,7 +194,7 @@
         "fee": 25
       },
       "id": "4126-Nw-Claymont-Dr,-Kansas-City,-MO-64116",
-      "lastSeenDate": "2026-07-07T08:11:35.330Z",
+      "lastSeenDate": "2026-07-08T06:08:08.885Z",
       "latitude": 39.170472,
       "listedDate": "2026-07-06T00:00:00.000Z",
       "listingAgent": {
@@ -222,5 +222,5 @@
       "zipCode": "64116"
     }
   },
-  "updated": "2026-07-07T15:45:42.166674+00:00"
+  "updated": "2026-07-08T15:26:22.618223+00:00"
 }
