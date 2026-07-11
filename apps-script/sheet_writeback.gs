@@ -15,8 +15,8 @@
  *   1. Open your Dream Home Google Sheet.
  *   2. Extensions -> Apps Script. Delete any starter code and paste this file.
  *   3. Edit the two CONFIG values below:
- *        - SHEET_NAME:    the exact name of the tab that holds your home rows.
- *        - SHARED_SECRET: any long random string (e.g. a password-manager value).
+ *        - SHEET_NAME:    Claude
+ *        - SHARED_SECRET: 3ruqHF-nBp741GH8dmW21u3bDIq9i4hZ
  *   4. Click Deploy -> New deployment -> gear icon -> "Web app".
  *        - Description:    dream-home writeback
  *        - Execute as:     Me
@@ -34,8 +34,8 @@
  */
 
 // ==== CONFIG — edit these three ====
-var SHEET_NAME = 'Sheet1';                         // <-- your Briarcliff tab's exact name
-var SHARED_SECRET = 'CHANGE_ME_to_a_long_random_string';  // <-- must match site/config.js
+var SHEET_NAME = 'Claude';                         // <-- your Briarcliff tab's exact name
+var SHARED_SECRET = '3ruqHF-nBp741GH8dmW21u3bDIq9i4hZ';  // <-- must match site/config.js
 var KEY_COLUMN = 'Address';                         // column used to locate the row
 
 

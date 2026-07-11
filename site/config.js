@@ -45,7 +45,11 @@ window.DREAM_HOME_CONFIG = {
     // Used as a geographic pre-filter combined with parcelStreetNames below.
     // The bbox alone covers ~11k parcels (over the service limit), so we always
     // use both together.  Covers Briarcliff West + Briarcliff-Claymont.
-    parcelBbox: [39.15, -94.60, 39.20, -94.55],
+    // minLng was -94.60, which clipped the west side of the Hickory Ct cul-de-sac
+    // and NW 47th Ter (parcels extend to lng -94.6014) — widened with margin so
+    // esriSpatialRelIntersects doesn't drop parcels whose polygon falls entirely
+    // outside the old edge.
+    parcelBbox: [39.15, -94.603, 39.20, -94.55],
 
     // Street names to query from the Clay County parcel service.
     // These are the situs_st_name values (uppercase, no prefix/suffix) for every
