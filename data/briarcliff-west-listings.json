@@ -52,6 +52,69 @@
       "yearBuilt": 1983,
       "zipCode": "64116"
     },
+    "1305 nw 43rd ter, kansas city, mo 64116": {
+      "addressLine1": "1305 Nw 43rd Ter",
+      "addressLine2": null,
+      "bathrooms": 4.5,
+      "bedrooms": 5,
+      "city": "Kansas City",
+      "county": "Clay",
+      "countyFips": "047",
+      "createdDate": "2026-04-19T00:00:00.000Z",
+      "daysOnMarket": 4,
+      "formattedAddress": "1305 Nw 43rd Ter, Kansas City, MO 64116",
+      "history": {
+        "2026-04-18": {
+          "daysOnMarket": 25,
+          "event": "Sale Listing",
+          "listedDate": "2026-04-18T00:00:00.000Z",
+          "listingType": "Standard",
+          "price": 1200000,
+          "removedDate": "2026-05-13T00:00:00.000Z"
+        },
+        "2026-07-21": {
+          "daysOnMarket": 4,
+          "event": "Sale Listing",
+          "listedDate": "2026-07-21T00:00:00.000Z",
+          "listingType": "Standard",
+          "price": 1210000,
+          "removedDate": null
+        }
+      },
+      "hoa": {
+        "fee": 100
+      },
+      "id": "1305-Nw-43rd-Ter,-Kansas-City,-MO-64116",
+      "lastSeenDate": "2026-07-24T06:11:46.673Z",
+      "latitude": 39.172741,
+      "listedDate": "2026-07-21T00:00:00.000Z",
+      "listingAgent": {
+        "email": "danvick@remax.net",
+        "name": "Dan Vick",
+        "phone": "8162107359",
+        "website": "http://www.danvick.com"
+      },
+      "listingOffice": {
+        "email": "dlwiesemann@remax.net",
+        "name": "RE MAX Heritage",
+        "phone": "8165872323",
+        "website": "www.realestateinkansascity.com"
+      },
+      "listingType": "Standard",
+      "longitude": -94.598547,
+      "lotSize": 26136,
+      "mlsName": "Heartland",
+      "mlsNumber": "2632464",
+      "price": 1210000,
+      "propertyType": "Single Family",
+      "removedDate": null,
+      "squareFootage": 5955,
+      "state": "MO",
+      "stateFips": "29",
+      "status": "Active",
+      "yearBuilt": 1992,
+      "zipCode": "64116"
+    },
     "217 nw 43rd st, kansas city, mo 64116": {
       "addressLine1": "217 Nw 43rd St",
       "addressLine2": null,
@@ -230,7 +293,61 @@
       "status": "Active",
       "yearBuilt": 1969,
       "zipCode": "64116"
+    },
+    "4522 n mulberry ct, kansas city, mo 64116": {
+      "addressLine1": "4522 N Mulberry Ct",
+      "addressLine2": null,
+      "bathrooms": 4.5,
+      "bedrooms": 6,
+      "city": "Kansas City",
+      "county": "Clay",
+      "countyFips": "047",
+      "createdDate": "2026-06-10T00:00:00.000Z",
+      "daysOnMarket": 46,
+      "formattedAddress": "4522 N Mulberry Ct, Kansas City, MO 64116",
+      "history": {
+        "2026-06-09": {
+          "daysOnMarket": 46,
+          "event": "Sale Listing",
+          "listedDate": "2026-06-09T00:00:00.000Z",
+          "listingType": "Standard",
+          "price": 1100000,
+          "removedDate": null
+        }
+      },
+      "hoa": {
+        "fee": 108
+      },
+      "id": "4522-N-Mulberry-Ct,-Kansas-City,-MO-64116",
+      "lastSeenDate": "2026-07-24T07:49:35.881Z",
+      "latitude": 39.177183,
+      "listedDate": "2026-06-09T00:00:00.000Z",
+      "listingAgent": {
+        "email": "jlandrum@reecenichols.com",
+        "name": "James Landrum",
+        "phone": "8165298722"
+      },
+      "listingOffice": {
+        "email": "ran01office@reecenichols.com",
+        "name": "ReeceNichols - Country Club Plaza",
+        "phone": "8167094900",
+        "website": "http://www.reecenichols.com/country-club-plaza"
+      },
+      "listingType": "Standard",
+      "longitude": -94.598888,
+      "lotSize": 38333,
+      "mlsName": "Heartland",
+      "mlsNumber": "2625086",
+      "price": 1100000,
+      "propertyType": "Single Family",
+      "removedDate": null,
+      "squareFootage": 7585,
+      "state": "MO",
+      "stateFips": "29",
+      "status": "Active",
+      "yearBuilt": 1998,
+      "zipCode": "64116"
     }
   },
-  "updated": "2026-07-24T15:00:07.324062+00:00"
+  "updated": "2026-07-24T15:07:40.828626+00:00"
 }
