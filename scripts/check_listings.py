@@ -62,13 +62,17 @@ from email.message import EmailMessage
 # RentCast sale-listings endpoint.  Docs: https://developers.rentcast.io/
 RENTCAST_URL = "https://api.rentcast.io/v1/listings/sale"
 
-# Search centre for Briarcliff West.  Matches mapCenter in site/config.js so the
-# map and the watcher stay pointed at the same place.  [latitude, longitude]
-SEARCH_CENTER = (39.166, -94.582)
+# Search centre for Briarcliff West.  This is the polygon's centre, NOT the map's
+# cosmetic mapCenter — the two are intentionally decoupled.  The old value sat on
+# the polygon's eastern edge, so a 0.75mi radius missed the western half of the
+# neighbourhood (e.g. 1305 NW 43rd Ter, 0.95mi out but inside the polygon).
+# [latitude, longitude]
+SEARCH_CENTER = (39.174, -94.595)
 
-# Search radius in MILES.  We deliberately over-fetch a little (the neighbourhood
-# is small) and then trim to the exact boundary with the polygon filter below.
-SEARCH_RADIUS_MILES = 0.75
+# Search radius in MILES.  Must reach the farthest polygon vertex (~0.78mi from
+# the centre above) with margin; the polygon filter below trims to the exact
+# boundary.  One RentCast call regardless of radius, so this stays free-tier safe.
+SEARCH_RADIUS_MILES = 0.9
 
 # Only ever pull active for-sale listings.  "Inactive" would include sold/removed
 # homes, which we don't want to alert on.
