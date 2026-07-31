@@ -9,11 +9,11 @@
       "county": "Clay",
       "countyFips": "047",
       "createdDate": "2026-06-21T00:00:00.000Z",
-      "daysOnMarket": 41,
+      "daysOnMarket": 42,
       "formattedAddress": "109 Nw 44th St, Kansas City, MO 64116",
       "history": {
         "2026-06-20": {
-          "daysOnMarket": 41,
+          "daysOnMarket": 42,
           "event": "Sale Listing",
           "listedDate": "2026-06-20T00:00:00.000Z",
           "listingType": "Standard",
@@ -25,7 +25,7 @@
         "fee": 9
       },
       "id": "109-Nw-44th-St,-Kansas-City,-MO-64116",
-      "lastSeenDate": "2026-07-30T08:07:12.893Z",
+      "lastSeenDate": "2026-07-31T07:58:40.579Z",
       "latitude": 39.174291,
       "listedDate": "2026-06-20T00:00:00.000Z",
       "listingAgent": {
@@ -124,7 +124,7 @@
       "county": "Clay",
       "countyFips": "047",
       "createdDate": "2026-02-01T00:00:00.000Z",
-      "daysOnMarket": 29,
+      "daysOnMarket": 30,
       "formattedAddress": "226 Nw 43rd St, Kansas City, MO 64116",
       "history": {
         "2026-01-31": {
@@ -136,7 +136,7 @@
           "removedDate": "2026-02-28T00:00:00.000Z"
         },
         "2026-07-02": {
-          "daysOnMarket": 29,
+          "daysOnMarket": 30,
           "event": "Sale Listing",
           "listedDate": "2026-07-02T00:00:00.000Z",
           "listingType": "Standard",
@@ -145,7 +145,7 @@
         }
       },
       "id": "226-Nw-43rd-St,-Kansas-City,-MO-64116",
-      "lastSeenDate": "2026-07-30T06:56:36.672Z",
+      "lastSeenDate": "2026-07-31T07:55:31.087Z",
       "latitude": 39.171954,
       "listedDate": "2026-07-02T00:00:00.000Z",
       "listingAgent": {
@@ -183,7 +183,7 @@
       "county": "Clay",
       "countyFips": "047",
       "createdDate": "2025-08-05T00:00:00.000Z",
-      "daysOnMarket": 2,
+      "daysOnMarket": 3,
       "formattedAddress": "404 Nw Briarcliff Rd, Kansas City, MO 64116",
       "history": {
         "2025-08-04": {
@@ -195,7 +195,7 @@
           "removedDate": "2025-12-10T00:00:00.000Z"
         },
         "2026-07-29": {
-          "daysOnMarket": 2,
+          "daysOnMarket": 3,
           "event": "Sale Listing",
           "listedDate": "2026-07-29T00:00:00.000Z",
           "listingType": "Standard",
@@ -207,7 +207,7 @@
         "fee": 25
       },
       "id": "404-Nw-Briarcliff-Rd,-Kansas-City,-MO-64116",
-      "lastSeenDate": "2026-07-30T06:34:00.600Z",
+      "lastSeenDate": "2026-07-31T05:27:48.852Z",
       "latitude": 39.170858,
       "listedDate": "2026-07-29T00:00:00.000Z",
       "listingAgent": {
@@ -244,7 +244,7 @@
       "county": "Clay",
       "countyFips": "047",
       "createdDate": "2024-01-17T00:00:00.000Z",
-      "daysOnMarket": 23,
+      "daysOnMarket": 24,
       "formattedAddress": "4321 Nw Briarcliff Ln, Kansas City, MO 64116",
       "history": {
         "2024-10-17": {
@@ -256,7 +256,7 @@
           "removedDate": "2025-01-10T00:00:00.000Z"
         },
         "2026-07-08": {
-          "daysOnMarket": 23,
+          "daysOnMarket": 24,
           "event": "Sale Listing",
           "listedDate": "2026-07-08T00:00:00.000Z",
           "listingType": "Standard",
@@ -268,7 +268,7 @@
         "fee": 25
       },
       "id": "4321-Nw-Briarcliff-Ln,-Kansas-City,-MO-64116",
-      "lastSeenDate": "2026-07-30T06:56:36.647Z",
+      "lastSeenDate": "2026-07-31T07:55:31.053Z",
       "latitude": 39.172516,
       "listedDate": "2026-07-08T00:00:00.000Z",
       "listingAgent": {
@@ -306,11 +306,11 @@
       "county": "Clay",
       "countyFips": "047",
       "createdDate": "2026-06-10T00:00:00.000Z",
-      "daysOnMarket": 52,
+      "daysOnMarket": 53,
       "formattedAddress": "4522 N Mulberry Ct, Kansas City, MO 64116",
       "history": {
         "2026-06-09": {
-          "daysOnMarket": 52,
+          "daysOnMarket": 53,
           "event": "Sale Listing",
           "listedDate": "2026-06-09T00:00:00.000Z",
           "listingType": "Standard",
@@ -322,7 +322,7 @@
         "fee": 108
       },
       "id": "4522-N-Mulberry-Ct,-Kansas-City,-MO-64116",
-      "lastSeenDate": "2026-07-30T08:07:13.713Z",
+      "lastSeenDate": "2026-07-31T07:58:40.612Z",
       "latitude": 39.177183,
       "listedDate": "2026-06-09T00:00:00.000Z",
       "listingAgent": {
@@ -352,5 +352,5 @@
       "zipCode": "64116"
     }
   },
-  "updated": "2026-07-30T15:15:33.570995+00:00"
+  "updated": "2026-07-31T15:23:38.698834+00:00"
 }
