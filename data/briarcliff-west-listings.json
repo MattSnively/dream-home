@@ -9,11 +9,11 @@
       "county": "Clay",
       "countyFips": "047",
       "createdDate": "2026-06-21T00:00:00.000Z",
-      "daysOnMarket": 42,
+      "daysOnMarket": 43,
       "formattedAddress": "109 Nw 44th St, Kansas City, MO 64116",
       "history": {
         "2026-06-20": {
-          "daysOnMarket": 42,
+          "daysOnMarket": 43,
           "event": "Sale Listing",
           "listedDate": "2026-06-20T00:00:00.000Z",
           "listingType": "Standard",
@@ -25,7 +25,7 @@
         "fee": 9
       },
       "id": "109-Nw-44th-St,-Kansas-City,-MO-64116",
-      "lastSeenDate": "2026-07-31T07:58:40.579Z",
+      "lastSeenDate": "2026-08-01T07:55:52.697Z",
       "latitude": 39.174291,
       "listedDate": "2026-06-20T00:00:00.000Z",
       "listingAgent": {
@@ -52,69 +52,6 @@
       "yearBuilt": 1983,
       "zipCode": "64116"
     },
-    "1305 nw 43rd ter, kansas city, mo 64116": {
-      "addressLine1": "1305 Nw 43rd Ter",
-      "addressLine2": null,
-      "bathrooms": 4.5,
-      "bedrooms": 5,
-      "city": "Kansas City",
-      "county": "Clay",
-      "countyFips": "047",
-      "createdDate": "2026-04-19T00:00:00.000Z",
-      "daysOnMarket": 9,
-      "formattedAddress": "1305 Nw 43rd Ter, Kansas City, MO 64116",
-      "history": {
-        "2026-04-18": {
-          "daysOnMarket": 25,
-          "event": "Sale Listing",
-          "listedDate": "2026-04-18T00:00:00.000Z",
-          "listingType": "Standard",
-          "price": 1200000,
-          "removedDate": "2026-05-13T00:00:00.000Z"
-        },
-        "2026-07-21": {
-          "daysOnMarket": 9,
-          "event": "Sale Listing",
-          "listedDate": "2026-07-21T00:00:00.000Z",
-          "listingType": "Standard",
-          "price": 1210000,
-          "removedDate": null
-        }
-      },
-      "hoa": {
-        "fee": 100
-      },
-      "id": "1305-Nw-43rd-Ter,-Kansas-City,-MO-64116",
-      "lastSeenDate": "2026-07-29T06:22:41.338Z",
-      "latitude": 39.172741,
-      "listedDate": "2026-07-21T00:00:00.000Z",
-      "listingAgent": {
-        "email": "danvick@remax.net",
-        "name": "Dan Vick",
-        "phone": "8162107359",
-        "website": "http://www.danvick.com"
-      },
-      "listingOffice": {
-        "email": "dlwiesemann@remax.net",
-        "name": "RE MAX Heritage",
-        "phone": "8165872323",
-        "website": "www.realestateinkansascity.com"
-      },
-      "listingType": "Standard",
-      "longitude": -94.598547,
-      "lotSize": 26136,
-      "mlsName": "Heartland",
-      "mlsNumber": "2632464",
-      "price": 1210000,
-      "propertyType": "Single Family",
-      "removedDate": null,
-      "squareFootage": 5955,
-      "state": "MO",
-      "stateFips": "29",
-      "status": "Active",
-      "yearBuilt": 1992,
-      "zipCode": "64116"
-    },
     "226 nw 43rd st, kansas city, mo 64116": {
       "addressLine1": "226 Nw 43rd St",
       "addressLine2": null,
@@ -124,7 +61,7 @@
       "county": "Clay",
       "countyFips": "047",
       "createdDate": "2026-02-01T00:00:00.000Z",
-      "daysOnMarket": 30,
+      "daysOnMarket": 31,
       "formattedAddress": "226 Nw 43rd St, Kansas City, MO 64116",
       "history": {
         "2026-01-31": {
@@ -136,7 +73,7 @@
           "removedDate": "2026-02-28T00:00:00.000Z"
         },
         "2026-07-02": {
-          "daysOnMarket": 30,
+          "daysOnMarket": 31,
           "event": "Sale Listing",
           "listedDate": "2026-07-02T00:00:00.000Z",
           "listingType": "Standard",
@@ -145,7 +82,7 @@
         }
       },
       "id": "226-Nw-43rd-St,-Kansas-City,-MO-64116",
-      "lastSeenDate": "2026-07-31T07:55:31.087Z",
+      "lastSeenDate": "2026-08-01T07:36:49.640Z",
       "latitude": 39.171954,
       "listedDate": "2026-07-02T00:00:00.000Z",
       "listingAgent": {
@@ -183,7 +120,7 @@
       "county": "Clay",
       "countyFips": "047",
       "createdDate": "2025-08-05T00:00:00.000Z",
-      "daysOnMarket": 3,
+      "daysOnMarket": 4,
       "formattedAddress": "404 Nw Briarcliff Rd, Kansas City, MO 64116",
       "history": {
         "2025-08-04": {
@@ -195,7 +132,7 @@
           "removedDate": "2025-12-10T00:00:00.000Z"
         },
         "2026-07-29": {
-          "daysOnMarket": 3,
+          "daysOnMarket": 4,
           "event": "Sale Listing",
           "listedDate": "2026-07-29T00:00:00.000Z",
           "listingType": "Standard",
@@ -207,7 +144,7 @@
         "fee": 25
       },
       "id": "404-Nw-Briarcliff-Rd,-Kansas-City,-MO-64116",
-      "lastSeenDate": "2026-07-31T05:27:48.852Z",
+      "lastSeenDate": "2026-08-01T07:19:48.884Z",
       "latitude": 39.170858,
       "listedDate": "2026-07-29T00:00:00.000Z",
       "listingAgent": {
@@ -244,7 +181,7 @@
       "county": "Clay",
       "countyFips": "047",
       "createdDate": "2024-01-17T00:00:00.000Z",
-      "daysOnMarket": 24,
+      "daysOnMarket": 25,
       "formattedAddress": "4321 Nw Briarcliff Ln, Kansas City, MO 64116",
       "history": {
         "2024-10-17": {
@@ -256,7 +193,7 @@
           "removedDate": "2025-01-10T00:00:00.000Z"
         },
         "2026-07-08": {
-          "daysOnMarket": 24,
+          "daysOnMarket": 25,
           "event": "Sale Listing",
           "listedDate": "2026-07-08T00:00:00.000Z",
           "listingType": "Standard",
@@ -268,7 +205,7 @@
         "fee": 25
       },
       "id": "4321-Nw-Briarcliff-Ln,-Kansas-City,-MO-64116",
-      "lastSeenDate": "2026-07-31T07:55:31.053Z",
+      "lastSeenDate": "2026-08-01T07:36:49.615Z",
       "latitude": 39.172516,
       "listedDate": "2026-07-08T00:00:00.000Z",
       "listingAgent": {
@@ -306,11 +243,11 @@
       "county": "Clay",
       "countyFips": "047",
       "createdDate": "2026-06-10T00:00:00.000Z",
-      "daysOnMarket": 53,
+      "daysOnMarket": 54,
       "formattedAddress": "4522 N Mulberry Ct, Kansas City, MO 64116",
       "history": {
         "2026-06-09": {
-          "daysOnMarket": 53,
+          "daysOnMarket": 54,
           "event": "Sale Listing",
           "listedDate": "2026-06-09T00:00:00.000Z",
           "listingType": "Standard",
@@ -322,7 +259,7 @@
         "fee": 108
       },
       "id": "4522-N-Mulberry-Ct,-Kansas-City,-MO-64116",
-      "lastSeenDate": "2026-07-31T07:58:40.612Z",
+      "lastSeenDate": "2026-08-01T07:55:52.758Z",
       "latitude": 39.177183,
       "listedDate": "2026-06-09T00:00:00.000Z",
       "listingAgent": {
@@ -350,7 +287,57 @@
       "status": "Active",
       "yearBuilt": 1998,
       "zipCode": "64116"
+    },
+    "500 nw 44th ter, gladstone, mo 64116": {
+      "addressLine1": "500 Nw 44th Ter",
+      "addressLine2": null,
+      "bathrooms": 3.5,
+      "bedrooms": 4,
+      "city": "Gladstone",
+      "county": "Clay",
+      "countyFips": "047",
+      "createdDate": "2026-08-01T00:00:00.000Z",
+      "daysOnMarket": 2,
+      "formattedAddress": "500 Nw 44th Ter, Gladstone, MO 64116",
+      "history": {
+        "2026-07-31": {
+          "daysOnMarket": 2,
+          "event": "Sale Listing",
+          "listedDate": "2026-07-31T00:00:00.000Z",
+          "listingType": "Standard",
+          "price": 749000,
+          "removedDate": null
+        }
+      },
+      "id": "500-Nw-44th-Ter,-Gladstone,-MO-64116",
+      "lastSeenDate": "2026-08-01T07:19:48.862Z",
+      "latitude": 39.175432,
+      "listedDate": "2026-07-31T00:00:00.000Z",
+      "listingAgent": {
+        "email": "steven@metrorealtykc.com",
+        "name": "Steven Montgomery",
+        "phone": "8167819494"
+      },
+      "listingOffice": {
+        "email": "steven@metrorealtykc.com",
+        "name": "Metro Realty",
+        "phone": "8162553568",
+        "website": "http://www.metrorealtykc.com"
+      },
+      "listingType": "Standard",
+      "longitude": -94.587322,
+      "lotSize": 8750,
+      "mlsName": "Heartland",
+      "mlsNumber": "2634290",
+      "price": 749000,
+      "propertyType": "Single Family",
+      "removedDate": null,
+      "squareFootage": 3588,
+      "state": "MO",
+      "stateFips": "29",
+      "status": "Active",
+      "zipCode": "64116"
     }
   },
-  "updated": "2026-07-31T15:23:38.698834+00:00"
+  "updated": "2026-08-01T14:36:52.825027+00:00"
 }
