@@ -9,11 +9,11 @@
       "county": "Clay",
       "countyFips": "047",
       "createdDate": "2026-06-21T00:00:00.000Z",
-      "daysOnMarket": 69,
+      "daysOnMarket": 70,
       "formattedAddress": "109 Nw 44th St, Kansas City, MO 64116",
       "history": {
         "2026-06-20": {
-          "daysOnMarket": 69,
+          "daysOnMarket": 70,
           "event": "Sale Listing",
           "listedDate": "2026-06-20T00:00:00.000Z",
           "listingType": "Standard",
@@ -25,7 +25,7 @@
         "fee": 9
       },
       "id": "109-Nw-44th-St,-Kansas-City,-MO-64116",
-      "lastSeenDate": "2026-08-27T06:57:16.593Z",
+      "lastSeenDate": "2026-08-28T07:50:55.369Z",
       "latitude": 39.174291,
       "listedDate": "2026-06-20T00:00:00.000Z",
       "listingAgent": {
@@ -52,65 +52,6 @@
       "yearBuilt": 1983,
       "zipCode": "64116"
     },
-    "226 nw 43rd st, kansas city, mo 64116": {
-      "addressLine1": "226 Nw 43rd St",
-      "addressLine2": null,
-      "bathrooms": 2.5,
-      "bedrooms": 5,
-      "city": "Kansas City",
-      "county": "Clay",
-      "countyFips": "047",
-      "createdDate": "2026-02-01T00:00:00.000Z",
-      "daysOnMarket": 55,
-      "formattedAddress": "226 Nw 43rd St, Kansas City, MO 64116",
-      "history": {
-        "2026-01-31": {
-          "daysOnMarket": 28,
-          "event": "Sale Listing",
-          "listedDate": "2026-01-31T00:00:00.000Z",
-          "listingType": "Standard",
-          "price": 424900,
-          "removedDate": "2026-02-28T00:00:00.000Z"
-        },
-        "2026-07-02": {
-          "daysOnMarket": 55,
-          "event": "Sale Listing",
-          "listedDate": "2026-07-02T00:00:00.000Z",
-          "listingType": "Standard",
-          "price": 350000,
-          "removedDate": null
-        }
-      },
-      "id": "226-Nw-43rd-St,-Kansas-City,-MO-64116",
-      "lastSeenDate": "2026-08-25T07:12:08.572Z",
-      "latitude": 39.171954,
-      "listedDate": "2026-07-02T00:00:00.000Z",
-      "listingAgent": {
-        "email": "paul@sidwellhomes.com",
-        "name": "Paul Sidwell",
-        "phone": "8168124865",
-        "website": "http://www.sidwellhomes.com"
-      },
-      "listingOffice": {
-        "email": "remaxliberty@realtor.com",
-        "name": "RE/MAX Revolution Liberty",
-        "phone": "8167819080"
-      },
-      "listingType": "Standard",
-      "longitude": -94.584925,
-      "lotSize": 16117,
-      "mlsName": "Heartland",
-      "mlsNumber": "2629397",
-      "price": 350000,
-      "propertyType": "Single Family",
-      "removedDate": null,
-      "squareFootage": 2400,
-      "state": "MO",
-      "stateFips": "29",
-      "status": "Active",
-      "yearBuilt": 1955,
-      "zipCode": "64116"
-    },
     "404 nw briarcliff rd, kansas city, mo 64116": {
       "addressLine1": "404 Nw Briarcliff Rd",
       "addressLine2": null,
@@ -120,7 +61,7 @@
       "county": "Clay",
       "countyFips": "047",
       "createdDate": "2025-08-05T00:00:00.000Z",
-      "daysOnMarket": 30,
+      "daysOnMarket": 31,
       "formattedAddress": "404 Nw Briarcliff Rd, Kansas City, MO 64116",
       "history": {
         "2025-08-04": {
@@ -132,7 +73,7 @@
           "removedDate": "2025-12-10T00:00:00.000Z"
         },
         "2026-07-29": {
-          "daysOnMarket": 30,
+          "daysOnMarket": 31,
           "event": "Sale Listing",
           "listedDate": "2026-07-29T00:00:00.000Z",
           "listingType": "Standard",
@@ -144,7 +85,7 @@
         "fee": 25
       },
       "id": "404-Nw-Briarcliff-Rd,-Kansas-City,-MO-64116",
-      "lastSeenDate": "2026-08-27T06:20:26.842Z",
+      "lastSeenDate": "2026-08-28T07:41:55.501Z",
       "latitude": 39.170858,
       "listedDate": "2026-07-29T00:00:00.000Z",
       "listingAgent": {
@@ -181,7 +122,7 @@
       "county": "Clay",
       "countyFips": "047",
       "createdDate": "2024-01-17T00:00:00.000Z",
-      "daysOnMarket": 51,
+      "daysOnMarket": 52,
       "formattedAddress": "4321 Nw Briarcliff Ln, Kansas City, MO 64116",
       "history": {
         "2024-10-17": {
@@ -193,7 +134,7 @@
           "removedDate": "2025-01-10T00:00:00.000Z"
         },
         "2026-07-08": {
-          "daysOnMarket": 51,
+          "daysOnMarket": 52,
           "event": "Sale Listing",
           "listedDate": "2026-07-08T00:00:00.000Z",
           "listingType": "Standard",
@@ -205,7 +146,7 @@
         "fee": 25
       },
       "id": "4321-Nw-Briarcliff-Ln,-Kansas-City,-MO-64116",
-      "lastSeenDate": "2026-08-27T06:39:06.937Z",
+      "lastSeenDate": "2026-08-28T07:41:55.579Z",
       "latitude": 39.172516,
       "listedDate": "2026-07-08T00:00:00.000Z",
       "listingAgent": {
@@ -234,6 +175,57 @@
       "yearBuilt": 1969,
       "zipCode": "64116"
     },
+    "4408 nw normandy ln, kansas city, mo 64116": {
+      "addressLine1": "4408 Nw Normandy Ln",
+      "addressLine2": null,
+      "bathrooms": 4.5,
+      "bedrooms": 3,
+      "city": "Kansas City",
+      "county": "Clay",
+      "countyFips": "047",
+      "createdDate": "2026-08-28T00:00:00.000Z",
+      "daysOnMarket": 1,
+      "formattedAddress": "4408 Nw Normandy Ln, Kansas City, MO 64116",
+      "history": {
+        "2026-08-28": {
+          "daysOnMarket": 1,
+          "event": "Sale Listing",
+          "listedDate": "2026-08-28T00:00:00.000Z",
+          "listingType": "Standard",
+          "price": 440000,
+          "removedDate": null
+        }
+      },
+      "id": "4408-Nw-Normandy-Ln,-Kansas-City,-MO-64116",
+      "lastSeenDate": "2026-08-28T07:16:50.028Z",
+      "latitude": 39.175158,
+      "listedDate": "2026-08-28T00:00:00.000Z",
+      "listingAgent": {
+        "email": "jaylenn.wong@gmail.com",
+        "name": "Jaylenn Wong",
+        "phone": "6262266611"
+      },
+      "listingOffice": {
+        "email": "info@movewithplatinum.com",
+        "name": "Platinum Realty LLC",
+        "phone": "8882200988",
+        "website": "www.movewithplatinum.com"
+      },
+      "listingType": "Standard",
+      "longitude": -94.583241,
+      "lotSize": 20473,
+      "mlsName": "Heartland",
+      "mlsNumber": "2639232",
+      "price": 440000,
+      "propertyType": "Single Family",
+      "removedDate": null,
+      "squareFootage": 3674,
+      "state": "MO",
+      "stateFips": "29",
+      "status": "Active",
+      "yearBuilt": 1981,
+      "zipCode": "64116"
+    },
     "4522 n mulberry ct, kansas city, mo 64116": {
       "addressLine1": "4522 N Mulberry Ct",
       "addressLine2": null,
@@ -243,11 +235,11 @@
       "county": "Clay",
       "countyFips": "047",
       "createdDate": "2026-06-10T00:00:00.000Z",
-      "daysOnMarket": 80,
+      "daysOnMarket": 81,
       "formattedAddress": "4522 N Mulberry Ct, Kansas City, MO 64116",
       "history": {
         "2026-06-09": {
-          "daysOnMarket": 80,
+          "daysOnMarket": 81,
           "event": "Sale Listing",
           "listedDate": "2026-06-09T00:00:00.000Z",
           "listingType": "Standard",
@@ -259,7 +251,7 @@
         "fee": 108
       },
       "id": "4522-N-Mulberry-Ct,-Kansas-City,-MO-64116",
-      "lastSeenDate": "2026-08-27T06:57:17.096Z",
+      "lastSeenDate": "2026-08-28T07:50:55.359Z",
       "latitude": 39.177183,
       "listedDate": "2026-06-09T00:00:00.000Z",
       "listingAgent": {
@@ -297,11 +289,11 @@
       "county": "Clay",
       "countyFips": "047",
       "createdDate": "2026-08-22T00:00:00.000Z",
-      "daysOnMarket": 7,
+      "daysOnMarket": 8,
       "formattedAddress": "4718 N Mulberry Ct, Kansas City, MO 64116",
       "history": {
         "2026-08-21": {
-          "daysOnMarket": 7,
+          "daysOnMarket": 8,
           "event": "Sale Listing",
           "listedDate": "2026-08-21T00:00:00.000Z",
           "listingType": "Standard",
@@ -313,7 +305,7 @@
         "fee": 111
       },
       "id": "4718-N-Mulberry-Ct,-Kansas-City,-MO-64116",
-      "lastSeenDate": "2026-08-27T06:20:25.230Z",
+      "lastSeenDate": "2026-08-28T07:16:50.074Z",
       "latitude": 39.180624,
       "listedDate": "2026-08-21T00:00:00.000Z",
       "listingAgent": {
@@ -335,7 +327,7 @@
       "price": 850000,
       "propertyType": "Single Family",
       "removedDate": null,
-      "squareFootage": 5128,
+      "squareFootage": 5494,
       "state": "MO",
       "stateFips": "29",
       "status": "Active",
@@ -351,11 +343,11 @@
       "county": "Clay",
       "countyFips": "047",
       "createdDate": "2026-08-01T00:00:00.000Z",
-      "daysOnMarket": 28,
+      "daysOnMarket": 29,
       "formattedAddress": "500 Nw 44th Ter, Gladstone, MO 64116",
       "history": {
         "2026-07-31": {
-          "daysOnMarket": 28,
+          "daysOnMarket": 29,
           "event": "Sale Listing",
           "listedDate": "2026-07-31T00:00:00.000Z",
           "listingType": "Standard",
@@ -364,7 +356,7 @@
         }
       },
       "id": "500-Nw-44th-Ter,-Gladstone,-MO-64116",
-      "lastSeenDate": "2026-08-27T06:20:26.923Z",
+      "lastSeenDate": "2026-08-28T07:19:05.188Z",
       "latitude": 39.175432,
       "listedDate": "2026-07-31T00:00:00.000Z",
       "listingAgent": {
@@ -393,5 +385,5 @@
       "zipCode": "64116"
     }
   },
-  "updated": "2026-08-27T22:53:33.111030+00:00"
+  "updated": "2026-08-28T22:58:10.743390+00:00"
 }
