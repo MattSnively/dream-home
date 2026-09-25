@@ -9,11 +9,11 @@
       "county": "Clay",
       "countyFips": "047",
       "createdDate": "2026-06-21T00:00:00.000Z",
-      "daysOnMarket": 97,
+      "daysOnMarket": 98,
       "formattedAddress": "109 Nw 44th St, Kansas City, MO 64116",
       "history": {
         "2026-06-20": {
-          "daysOnMarket": 97,
+          "daysOnMarket": 98,
           "event": "Sale Listing",
           "listedDate": "2026-06-20T00:00:00.000Z",
           "listingType": "Standard",
@@ -25,7 +25,7 @@
         "fee": 9
       },
       "id": "109-Nw-44th-St,-Kansas-City,-MO-64116",
-      "lastSeenDate": "2026-09-24T08:26:38.968Z",
+      "lastSeenDate": "2026-09-25T07:11:10.376Z",
       "latitude": 39.174291,
       "listedDate": "2026-06-20T00:00:00.000Z",
       "listingAgent": {
@@ -61,7 +61,7 @@
       "county": "Clay",
       "countyFips": "047",
       "createdDate": "2025-08-05T00:00:00.000Z",
-      "daysOnMarket": 58,
+      "daysOnMarket": 59,
       "formattedAddress": "404 Nw Briarcliff Rd, Kansas City, MO 64116",
       "history": {
         "2025-08-04": {
@@ -73,7 +73,7 @@
           "removedDate": "2025-12-10T00:00:00.000Z"
         },
         "2026-07-29": {
-          "daysOnMarket": 58,
+          "daysOnMarket": 59,
           "event": "Sale Listing",
           "listedDate": "2026-07-29T00:00:00.000Z",
           "listingType": "Standard",
@@ -85,7 +85,7 @@
         "fee": 25
       },
       "id": "404-Nw-Briarcliff-Rd,-Kansas-City,-MO-64116",
-      "lastSeenDate": "2026-09-24T08:08:47.906Z",
+      "lastSeenDate": "2026-09-25T07:07:21.738Z",
       "latitude": 39.170858,
       "listedDate": "2026-07-29T00:00:00.000Z",
       "listingAgent": {
@@ -122,7 +122,7 @@
       "county": "Clay",
       "countyFips": "047",
       "createdDate": "2024-01-17T00:00:00.000Z",
-      "daysOnMarket": 79,
+      "daysOnMarket": 80,
       "formattedAddress": "4321 Nw Briarcliff Ln, Kansas City, MO 64116",
       "history": {
         "2024-10-17": {
@@ -134,7 +134,7 @@
           "removedDate": "2025-01-10T00:00:00.000Z"
         },
         "2026-07-08": {
-          "daysOnMarket": 79,
+          "daysOnMarket": 80,
           "event": "Sale Listing",
           "listedDate": "2026-07-08T00:00:00.000Z",
           "listingType": "Standard",
@@ -146,7 +146,7 @@
         "fee": 25
       },
       "id": "4321-Nw-Briarcliff-Ln,-Kansas-City,-MO-64116",
-      "lastSeenDate": "2026-09-24T08:26:38.910Z",
+      "lastSeenDate": "2026-09-25T07:11:10.312Z",
       "latitude": 39.172516,
       "listedDate": "2026-07-08T00:00:00.000Z",
       "listingAgent": {
@@ -184,11 +184,11 @@
       "county": "Clay",
       "countyFips": "047",
       "createdDate": "2026-08-28T00:00:00.000Z",
-      "daysOnMarket": 28,
+      "daysOnMarket": 29,
       "formattedAddress": "4408 Nw Normandy Ln, Kansas City, MO 64116",
       "history": {
         "2026-08-28": {
-          "daysOnMarket": 28,
+          "daysOnMarket": 29,
           "event": "Sale Listing",
           "listedDate": "2026-08-28T00:00:00.000Z",
           "listingType": "Standard",
@@ -197,7 +197,7 @@
         }
       },
       "id": "4408-Nw-Normandy-Ln,-Kansas-City,-MO-64116",
-      "lastSeenDate": "2026-09-24T07:28:11.948Z",
+      "lastSeenDate": "2026-09-25T07:07:17.869Z",
       "latitude": 39.175158,
       "listedDate": "2026-08-28T00:00:00.000Z",
       "listingAgent": {
@@ -235,11 +235,11 @@
       "county": "Clay",
       "countyFips": "047",
       "createdDate": "2026-08-22T00:00:00.000Z",
-      "daysOnMarket": 35,
+      "daysOnMarket": 36,
       "formattedAddress": "4718 N Mulberry Ct, Kansas City, MO 64116",
       "history": {
         "2026-08-21": {
-          "daysOnMarket": 35,
+          "daysOnMarket": 36,
           "event": "Sale Listing",
           "listedDate": "2026-08-21T00:00:00.000Z",
           "listingType": "Standard",
@@ -251,7 +251,7 @@
         "fee": 111
       },
       "id": "4718-N-Mulberry-Ct,-Kansas-City,-MO-64116",
-      "lastSeenDate": "2026-09-24T08:08:47.696Z",
+      "lastSeenDate": "2026-09-25T07:07:21.658Z",
       "latitude": 39.180624,
       "listedDate": "2026-08-21T00:00:00.000Z",
       "listingAgent": {
@@ -289,11 +289,11 @@
       "county": "Clay",
       "countyFips": "047",
       "createdDate": "2026-08-01T00:00:00.000Z",
-      "daysOnMarket": 56,
+      "daysOnMarket": 57,
       "formattedAddress": "500 Nw 44th Ter, Gladstone, MO 64116",
       "history": {
         "2026-07-31": {
-          "daysOnMarket": 56,
+          "daysOnMarket": 57,
           "event": "Sale Listing",
           "listedDate": "2026-07-31T00:00:00.000Z",
           "listingType": "Standard",
@@ -302,7 +302,7 @@
         }
       },
       "id": "500-Nw-44th-Ter,-Gladstone,-MO-64116",
-      "lastSeenDate": "2026-09-24T08:08:47.865Z",
+      "lastSeenDate": "2026-09-25T07:07:21.720Z",
       "latitude": 39.175432,
       "listedDate": "2026-07-31T00:00:00.000Z",
       "listingAgent": {
@@ -339,11 +339,11 @@
       "county": "Clay",
       "countyFips": "047",
       "createdDate": "2026-09-20T00:00:00.000Z",
-      "daysOnMarket": 6,
+      "daysOnMarket": 7,
       "formattedAddress": "504 Nw 47th St, Gladstone, MO 64116",
       "history": {
         "2026-09-19": {
-          "daysOnMarket": 6,
+          "daysOnMarket": 7,
           "event": "Sale Listing",
           "listedDate": "2026-09-19T00:00:00.000Z",
           "listingType": "Standard",
@@ -355,7 +355,7 @@
         "fee": 35
       },
       "id": "504-Nw-47th-St,-Gladstone,-MO-64116",
-      "lastSeenDate": "2026-09-24T06:54:35.218Z",
+      "lastSeenDate": "2026-09-25T05:49:37.156Z",
       "latitude": 39.179043,
       "listedDate": "2026-09-19T00:00:00.000Z",
       "listingAgent": {
@@ -384,5 +384,5 @@
       "zipCode": "64116"
     }
   },
-  "updated": "2026-09-24T17:48:32.542700+00:00"
+  "updated": "2026-09-25T17:51:50.789672+00:00"
 }
