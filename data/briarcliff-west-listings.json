@@ -9,11 +9,11 @@
       "county": "Clay",
       "countyFips": "047",
       "createdDate": "2026-06-21T00:00:00.000Z",
-      "daysOnMarket": 103,
+      "daysOnMarket": 105,
       "formattedAddress": "109 Nw 44th St, Kansas City, MO 64116",
       "history": {
         "2026-06-20": {
-          "daysOnMarket": 103,
+          "daysOnMarket": 105,
           "event": "Sale Listing",
           "listedDate": "2026-06-20T00:00:00.000Z",
           "listingType": "Standard",
@@ -25,7 +25,7 @@
         "fee": 9
       },
       "id": "109-Nw-44th-St,-Kansas-City,-MO-64116",
-      "lastSeenDate": "2026-09-30T08:43:55.924Z",
+      "lastSeenDate": "2026-10-02T08:39:49.519Z",
       "latitude": 39.174291,
       "listedDate": "2026-06-20T00:00:00.000Z",
       "listingAgent": {
@@ -61,7 +61,7 @@
       "county": "Clay",
       "countyFips": "047",
       "createdDate": "2025-08-05T00:00:00.000Z",
-      "daysOnMarket": 64,
+      "daysOnMarket": 66,
       "formattedAddress": "404 Nw Briarcliff Rd, Kansas City, MO 64116",
       "history": {
         "2025-08-04": {
@@ -73,7 +73,7 @@
           "removedDate": "2025-12-10T00:00:00.000Z"
         },
         "2026-07-29": {
-          "daysOnMarket": 64,
+          "daysOnMarket": 66,
           "event": "Sale Listing",
           "listedDate": "2026-07-29T00:00:00.000Z",
           "listingType": "Standard",
@@ -85,7 +85,7 @@
         "fee": 25
       },
       "id": "404-Nw-Briarcliff-Rd,-Kansas-City,-MO-64116",
-      "lastSeenDate": "2026-09-30T08:43:55.842Z",
+      "lastSeenDate": "2026-10-02T08:31:10.551Z",
       "latitude": 39.170858,
       "listedDate": "2026-07-29T00:00:00.000Z",
       "listingAgent": {
@@ -122,11 +122,11 @@
       "county": "Clay",
       "countyFips": "047",
       "createdDate": "2026-08-28T00:00:00.000Z",
-      "daysOnMarket": 34,
+      "daysOnMarket": 36,
       "formattedAddress": "4408 Nw Normandy Ln, Kansas City, MO 64116",
       "history": {
         "2026-08-28": {
-          "daysOnMarket": 34,
+          "daysOnMarket": 36,
           "event": "Sale Listing",
           "listedDate": "2026-08-28T00:00:00.000Z",
           "listingType": "Standard",
@@ -135,7 +135,7 @@
         }
       },
       "id": "4408-Nw-Normandy-Ln,-Kansas-City,-MO-64116",
-      "lastSeenDate": "2026-09-30T08:20:53.218Z",
+      "lastSeenDate": "2026-10-02T08:28:02.390Z",
       "latitude": 39.175158,
       "listedDate": "2026-08-28T00:00:00.000Z",
       "listingAgent": {
@@ -173,15 +173,15 @@
       "county": "Clay",
       "countyFips": "047",
       "createdDate": "2026-08-22T00:00:00.000Z",
-      "daysOnMarket": 41,
+      "daysOnMarket": 43,
       "formattedAddress": "4718 N Mulberry Ct, Kansas City, MO 64116",
       "history": {
         "2026-08-21": {
-          "daysOnMarket": 41,
+          "daysOnMarket": 43,
           "event": "Sale Listing",
           "listedDate": "2026-08-21T00:00:00.000Z",
           "listingType": "Standard",
-          "price": 825000,
+          "price": 799000,
           "removedDate": null
         }
       },
@@ -189,7 +189,7 @@
         "fee": 111
       },
       "id": "4718-N-Mulberry-Ct,-Kansas-City,-MO-64116",
-      "lastSeenDate": "2026-09-30T08:20:53.268Z",
+      "lastSeenDate": "2026-10-02T08:28:02.454Z",
       "latitude": 39.180624,
       "listedDate": "2026-08-21T00:00:00.000Z",
       "listingAgent": {
@@ -208,7 +208,7 @@
       "lotSize": 20473,
       "mlsName": "Heartland",
       "mlsNumber": "2635256",
-      "price": 825000,
+      "price": 799000,
       "propertyType": "Single Family",
       "removedDate": null,
       "squareFootage": 5494,
@@ -227,11 +227,11 @@
       "county": "Clay",
       "countyFips": "047",
       "createdDate": "2026-08-01T00:00:00.000Z",
-      "daysOnMarket": 62,
+      "daysOnMarket": 64,
       "formattedAddress": "500 Nw 44th Ter, Gladstone, MO 64116",
       "history": {
         "2026-07-31": {
-          "daysOnMarket": 62,
+          "daysOnMarket": 64,
           "event": "Sale Listing",
           "listedDate": "2026-07-31T00:00:00.000Z",
           "listingType": "Standard",
@@ -240,7 +240,7 @@
         }
       },
       "id": "500-Nw-44th-Ter,-Gladstone,-MO-64116",
-      "lastSeenDate": "2026-09-30T08:43:55.845Z",
+      "lastSeenDate": "2026-10-02T08:31:10.526Z",
       "latitude": 39.175432,
       "listedDate": "2026-07-31T00:00:00.000Z",
       "listingAgent": {
@@ -277,11 +277,11 @@
       "county": "Clay",
       "countyFips": "047",
       "createdDate": "2023-08-22T00:00:00.000Z",
-      "daysOnMarket": 4,
+      "daysOnMarket": 6,
       "formattedAddress": "515 Nw 43rd Ter, Kansas City, MO 64116",
       "history": {
         "2026-09-27": {
-          "daysOnMarket": 4,
+          "daysOnMarket": 6,
           "event": "Sale Listing",
           "listedDate": "2026-09-27T00:00:00.000Z",
           "listingType": "Standard",
@@ -293,7 +293,7 @@
         "fee": 23
       },
       "id": "515-Nw-43rd-Ter,-Kansas-City,-MO-64116",
-      "lastSeenDate": "2026-09-30T05:28:55.691Z",
+      "lastSeenDate": "2026-10-02T06:22:40.835Z",
       "latitude": 39.172941,
       "listedDate": "2026-09-27T00:00:00.000Z",
       "listingAgent": {
@@ -321,5 +321,5 @@
       "zipCode": "64116"
     }
   },
-  "updated": "2026-09-30T18:20:00.958708+00:00"
+  "updated": "2026-10-02T18:17:38.325748+00:00"
 }
